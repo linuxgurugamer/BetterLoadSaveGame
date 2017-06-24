@@ -48,8 +48,8 @@ namespace BetterLoadSaveGame
                     {
                         if (GUILayout.Button(save.ToString(), buttonStyle))
                         {
-                        // KSP seems to crash if we load the game here, but works ok in Update.
-                        _saveToLoad = save;
+                            // KSP seems to crash if we load the game here, but works ok in Update.
+                            _saveToLoad = save;
                         }
                     }
 
