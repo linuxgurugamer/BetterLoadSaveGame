@@ -48,7 +48,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddOnMain.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="SaveGameInfo.cs" />
     <Compile Include="SaveGameManager.cs" />
   </ItemGroup>

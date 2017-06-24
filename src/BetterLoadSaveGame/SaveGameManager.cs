@@ -5,12 +5,10 @@ namespace BetterLoadSaveGame
 {
     public static class SaveGameManager
     {
-        public static List<SaveGameInfo> GetAllSaves(string gameDir, string saveFolder)
+        public static List<SaveGameInfo> GetAllSaves(string saveDir)
         {
-            var allSavesDir = Path.Combine(gameDir, "saves");
-            var currentSavesDir = Path.Combine(allSavesDir, saveFolder);
             var result = new List<SaveGameInfo>();
-            foreach (var saveFile in Directory.GetFiles(currentSavesDir, "*.sfs"))
+            foreach (var saveFile in Directory.GetFiles(saveDir, "*.sfs"))
             {
                 result.Add(new SaveGameInfo(saveFile));
             }
