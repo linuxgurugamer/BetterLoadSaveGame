@@ -12,6 +12,7 @@ namespace BetterLoadSaveGame
         private bool _triggered = false;
         private SaveGameInfo _saveToLoad;
         private List<SaveGameInfo> _saves;
+        private Rect _windowRect;
 
         public void Start()
         {
@@ -26,20 +27,34 @@ namespace BetterLoadSaveGame
 
         public void Update()
         {
-            if (!_triggered)
-            {
-                var trigger = _started.AddSeconds(10);
-                if (DateTime.Now > trigger)
-                {
-                    _triggered = true;
-                    _saveToLoad = _saves[0];
-                }
-            }
+            //if (!_triggered)
+            //{
+            //    var trigger = _started.AddSeconds(10);
+            //    if (DateTime.Now > trigger)
+            //    {
+            //        _triggered = true;
+            //        _saveToLoad = _saves[0];
+            //    }
+            //}
 
             if (_saveToLoad != null)
             {
                 LoadSaveGame(_saveToLoad);
             }
+        }
+
+        private void OnGUI()
+        {
+            _windowRect = GUILayout.Window(GetInstanceID(), _windowRect, (windowID) =>
+            {
+                foreach (var save in _saves)
+                {
+                    if (GUILayout.Button(save.ToString()))
+                    {
+                        _saveToLoad = save;
+                    }
+                }
+            }, "Load Game");
         }
 
         private void LoadSaveGame(SaveGameInfo save)
