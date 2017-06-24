@@ -10,7 +10,7 @@ namespace BetterLoadSaveGame
     {
         private SaveGameInfo _saveToLoad;
         private List<SaveGameInfo> _saves;
-        private Rect _windowRect;
+        private Rect _windowRect = new Rect(100, 100, 0, 0);
 
         public void Start()
         {

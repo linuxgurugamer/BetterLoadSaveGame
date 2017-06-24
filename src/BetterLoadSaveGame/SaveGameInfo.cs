@@ -33,7 +33,7 @@ namespace BetterLoadSaveGame
         public override string ToString()
         {
             return String.Format("{0} - {1}",
-                SaveFile.CreationTime,
+                SaveFile.LastWriteTime,
                 Path.GetFileNameWithoutExtension(SaveFile.Name)
                 );
         }

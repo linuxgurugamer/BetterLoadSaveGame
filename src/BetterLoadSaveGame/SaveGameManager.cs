@@ -14,7 +14,7 @@ namespace BetterLoadSaveGame
             {
                 result.Add(new SaveGameInfo(saveFile));
             }
-            result.Sort((a, b) => b.SaveFile.CreationTime.CompareTo(a.SaveFile.CreationTime));
+            result.Sort((a, b) => b.SaveFile.LastWriteTime.CompareTo(a.SaveFile.CreationTime));
             return result;
         }
     }
