@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace BetterLoadSaveGame
@@ -8,19 +10,18 @@ namespace BetterLoadSaveGame
     {
         private DateTime _started;
         private bool _triggered = false;
+        private SaveGameInfo _saveToLoad;
+        private List<SaveGameInfo> _saves;
 
         public void Start()
         {
             _started = DateTime.Now;
+            LoadExistingSaveGames();
+        }
 
-            Debug.Log("SAVE GAMES");
-
-            foreach(var save in SaveGameManager.GetAllSaves(KSPUtil.ApplicationRootPath, HighLogic.SaveFolder))
-            {
-                Debug.Log(save);
-            }
-
-            Debug.Log("DONE");
+        private void LoadExistingSaveGames()
+        {
+            _saves = SaveGameManager.GetAllSaves(KSPUtil.ApplicationRootPath, HighLogic.SaveFolder);
         }
 
         public void Update()
@@ -30,12 +31,22 @@ namespace BetterLoadSaveGame
                 var trigger = _started.AddSeconds(10);
                 if (DateTime.Now > trigger)
                 {
-                    Debug.Log("TRIGGERING");
                     _triggered = true;
-                    var game = GamePersistence.LoadGame("persistent", HighLogic.SaveFolder, true, false);
-                    game.Start();
+                    _saveToLoad = _saves[0];
                 }
             }
+
+            if (_saveToLoad != null)
+            {
+                LoadSaveGame(_saveToLoad);
+            }
+        }
+
+        private void LoadSaveGame(SaveGameInfo save)
+        {
+            var name = Path.GetFileNameWithoutExtension(save.SaveFile.Name);
+            var game = GamePersistence.LoadGame(name, HighLogic.SaveFolder, true, false);
+            game.Start();
         }
     }
 }
