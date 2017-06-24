@@ -10,7 +10,7 @@ namespace BetterLoadSaveGame
     {
         private SaveGameInfo _saveToLoad;
         private List<SaveGameInfo> _saves;
-        private Rect _windowRect = new Rect(100, 100, 300, 400);
+        private Rect _windowRect = new Rect(100, 100, 400, 500);
         private Vector2 _scrollPos;
         private bool _visible = false;
         private bool _toggleVisibility = false;
@@ -75,9 +75,16 @@ namespace BetterLoadSaveGame
 
                     foreach (var save in _saves)
                     {
-                        if (GUILayout.Button(save.ToString(), buttonStyle))
+                        var content = new GUIContent();
+                        content.text = save.ButtonText;
+
+                        if (save.ButtonImage != null)
                         {
-                            // KSP seems to crash if we load the game here, but works ok in Update.
+                            content.image = save.ButtonImage;
+                        }
+
+                        if (GUILayout.Button(content, buttonStyle))
+                        {
                             _saveToLoad = save;
                         }
                     }
