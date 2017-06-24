@@ -10,7 +10,9 @@ namespace BetterLoadSaveGame
     {
         private SaveGameInfo _saveToLoad;
         private List<SaveGameInfo> _saves;
-        private Rect _windowRect = new Rect(100, 100, 0, 0);
+        private Rect _windowRect = new Rect(100, 100, 300, 400);
+        private Vector2 _scrollPos;
+        private bool _visible = true; // TODO: make visible on toolbar button or keypress
 
         public void Start()
         {
@@ -33,17 +35,28 @@ namespace BetterLoadSaveGame
 
         private void OnGUI()
         {
-            _windowRect = GUILayout.Window(GetInstanceID(), _windowRect, (windowID) =>
+            if (_visible)
             {
-                foreach (var save in _saves)
+                var buttonStyle = new GUIStyle(GUI.skin.button);
+                buttonStyle.alignment = TextAnchor.MiddleLeft;
+
+                _windowRect = GUILayout.Window(GetInstanceID(), _windowRect, (windowID) =>
                 {
-                    if (GUILayout.Button(save.ToString()))
+                    _scrollPos = GUILayout.BeginScrollView(_scrollPos);
+
+                    foreach (var save in _saves)
                     {
+                        if (GUILayout.Button(save.ToString(), buttonStyle))
+                        {
                         // KSP seems to crash if we load the game here, but works ok in Update.
                         _saveToLoad = save;
+                        }
                     }
-                }
-            }, "Load Game");
+
+                    GUILayout.EndScrollView();
+                    GUI.DragWindow();
+                }, "Load Game");
+            }
         }
 
         private void LoadSaveGame(SaveGameInfo save)
