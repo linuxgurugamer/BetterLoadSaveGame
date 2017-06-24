@@ -8,15 +8,12 @@ namespace BetterLoadSaveGame
     [KSPAddon(KSPAddon.Startup.FlightAndKSC, false)]
     public class AddOnMain : MonoBehaviour
     {
-        private DateTime _started;
-        private bool _triggered = false;
         private SaveGameInfo _saveToLoad;
         private List<SaveGameInfo> _saves;
         private Rect _windowRect;
 
         public void Start()
         {
-            _started = DateTime.Now;
             LoadExistingSaveGames();
         }
 
@@ -27,19 +24,10 @@ namespace BetterLoadSaveGame
 
         public void Update()
         {
-            //if (!_triggered)
-            //{
-            //    var trigger = _started.AddSeconds(10);
-            //    if (DateTime.Now > trigger)
-            //    {
-            //        _triggered = true;
-            //        _saveToLoad = _saves[0];
-            //    }
-            //}
-
             if (_saveToLoad != null)
             {
                 LoadSaveGame(_saveToLoad);
+                _saveToLoad = null;
             }
         }
 
@@ -51,6 +39,7 @@ namespace BetterLoadSaveGame
                 {
                     if (GUILayout.Button(save.ToString()))
                     {
+                        // KSP seems to crash if we load the game here, but works ok in Update.
                         _saveToLoad = save;
                     }
                 }

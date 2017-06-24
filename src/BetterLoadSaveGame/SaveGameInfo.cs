@@ -32,7 +32,10 @@ namespace BetterLoadSaveGame
 
         public override string ToString()
         {
-            return SaveFile.FullName + " : " + String.Join(", ", MetaData.Select(r => r.Key + " = " + r.Value).ToArray());
+            return String.Format("{0} - {1}",
+                SaveFile.CreationTime,
+                Path.GetFileNameWithoutExtension(SaveFile.Name)
+                );
         }
     }
 
