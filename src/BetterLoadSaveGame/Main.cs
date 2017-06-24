@@ -8,8 +8,6 @@ namespace BetterLoadSaveGame
     [KSPAddon(KSPAddon.Startup.FlightAndKSC, false)]
     public class Main : MonoBehaviour
     {
-        private const string SCREENSHOT_FILENAME = "blsgss.png";
-
         private SaveGameInfo _saveToLoad;
         private List<SaveGameInfo> _saves;
         private Rect _windowRect = new Rect(100, 100, 300, 400);
@@ -22,7 +20,7 @@ namespace BetterLoadSaveGame
         public void Start()
         {
             _saveDir = Path.Combine(Path.Combine(KSPUtil.ApplicationRootPath, "saves"), HighLogic.SaveFolder);
-            _watcher = new FileSystemWatcher(_saveDir);
+            _watcher = new FileSystemWatcher(_saveDir, "*.sfs");
             _watcher.Changed += OnSave;
             _watcher.Created += OnSave;
             _watcher.EnableRaisingEvents = true;
@@ -31,7 +29,8 @@ namespace BetterLoadSaveGame
 
         private void OnSave(object sender, FileSystemEventArgs e)
         {
-            Application.CaptureScreenshot(SCREENSHOT_FILENAME);
+            var screenShotFileName = Path.ChangeExtension(e.FullPath, ".png");
+            Application.CaptureScreenshot(screenShotFileName);
             LoadExistingSaveGames();
         }
 
