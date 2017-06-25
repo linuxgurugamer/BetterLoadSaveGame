@@ -17,7 +17,7 @@ namespace BetterLoadSaveGame
             {
                 message = String.Format(message, args);
             }
-            return String.Format("[BLSG] {0}", message);
+            return String.Format("[BetterLoadSaveGame] {0}", message);
         }
 
         public static void Info(object messageOrFormat, params object[] args)

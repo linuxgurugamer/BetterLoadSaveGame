@@ -37,44 +37,62 @@ namespace BetterLoadSaveGame
             }
             else
             {
-                Debug.Log("File not found: " + filePath);
+                Log.Error("File not found: " + filePath);
             }
             return tex;
         }
 
         public void Start()
         {
-            _saveDir = Path.Combine(Path.Combine(KSPUtil.ApplicationRootPath, "saves"), HighLogic.SaveFolder);
-            _watcher = new FileSystemWatcher(_saveDir);
-            _watcher.Changed += OnSave;
-            _watcher.Created += OnSave;
-            _watcher.EnableRaisingEvents = true;
-
-            foreach (var file in Directory.GetFiles(_saveDir, "*.png"))
+            try
             {
-                _screenshots[Path.GetFileNameWithoutExtension(file)] = LoadPNG(file);
+                _saveDir = Path.Combine(Path.Combine(KSPUtil.ApplicationRootPath, "saves"), HighLogic.SaveFolder);
+                _watcher = new FileSystemWatcher(_saveDir);
+                _watcher.Changed += OnSave;
+                _watcher.Created += OnSave;
+                _watcher.EnableRaisingEvents = true;
+
+                foreach (var file in Directory.GetFiles(_saveDir, "*.png"))
+                {
+                    _screenshots[Path.GetFileNameWithoutExtension(file)] = LoadPNG(file);
+                }
+
+                _windowRect = new Rect((Screen.width - WIDTH) / 2, (Screen.height - HEIGHT) / 2, WIDTH, HEIGHT);
+
+                // Supposedly should be able to load the texture using GameDatabase.Instance.GetTexture but I can't get it to work :(
+                _placeholder = LoadPNG(Path.GetFullPath("GameData/BetterLoadSaveGame/placeholder.png"));
+
+                Log.Info("Started");
             }
-
-            _windowRect = new Rect((Screen.width - WIDTH) / 2, (Screen.height - HEIGHT) / 2, WIDTH, HEIGHT);
-
-            // Supposedly should be able to load the texture using GameDatabase.Instance.GetTexture but I can't get it to work :(
-            _placeholder = LoadPNG(Path.GetFullPath("GameData/BetterLoadSaveGame/placeholder.png"));
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
         }
 
         private void OnSave(object sender, FileSystemEventArgs e)
         {
-            if (e.FullPath.EndsWith(".sfs"))
+            try
             {
-                _saveScreenshot = Path.ChangeExtension(e.FullPath, ".png");
+                Log.Info("Detected file change: {0}", e.Name);
+                if (e.FullPath.EndsWith(".sfs"))
+                {
+                    _saveScreenshot = Path.ChangeExtension(e.FullPath, ".png");
+                }
+                else if (e.FullPath.EndsWith(".png"))
+                {
+                    _loadScreenshot = e.FullPath;
+                }
             }
-            else if (e.FullPath.EndsWith(".png"))
+            catch (Exception ex)
             {
-                _loadScreenshot = e.FullPath;
+                Log.Error(ex);
             }
         }
 
         private void LoadExistingSaveGames()
         {
+            Log.Info("Loading existing save games");
             _saves = new List<SaveGameInfo>();
             foreach (var saveFile in Directory.GetFiles(_saveDir, "*.sfs"))
             {
@@ -85,6 +103,7 @@ namespace BetterLoadSaveGame
 
         private void SetVisible(bool visible)
         {
+            Log.Info("Changing visibility to: {0}", visible);
             _visible = visible;
             FlightDriver.SetPause(visible);
 
@@ -96,80 +115,98 @@ namespace BetterLoadSaveGame
 
         public void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F7))
+            try
             {
-                if (!_toggleVisibility)
+                if (Input.GetKeyDown(KeyCode.F7))
                 {
-                    _toggleVisibility = true;
-                    SetVisible(!_visible);
+                    if (!_toggleVisibility)
+                    {
+                        _toggleVisibility = true;
+                        SetVisible(!_visible);
+                    }
+                }
+                else
+                {
+                    _toggleVisibility = false;
+                }
+
+                if (_saveToLoad != null)
+                {
+                    SetVisible(false);
+                    LoadSaveGame(_saveToLoad);
+                    _saveToLoad = null;
+                }
+
+                if (_saveScreenshot != null)
+                {
+                    Log.Info("Capturing screenshot: {0}", _saveScreenshot);
+                    Application.CaptureScreenshot(_saveScreenshot);
+                    _saveScreenshot = null;
+                }
+
+                if (_loadScreenshot != null)
+                {
+                    Log.Info("Loading save image: {0}", _loadScreenshot);
+                    _screenshots[Path.GetFileNameWithoutExtension(_loadScreenshot)] = LoadPNG(_loadScreenshot);
+                    _loadScreenshot = null;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                _toggleVisibility = false;
-            }
-
-            if (_saveToLoad != null)
-            {
-                SetVisible(false);
-                LoadSaveGame(_saveToLoad);
-                _saveToLoad = null;
-            }
-
-            if (_saveScreenshot != null)
-            {
-                Application.CaptureScreenshot(_saveScreenshot);
-                _saveScreenshot = null;
-            }
-
-            if (_loadScreenshot != null)
-            {
-                _screenshots[Path.GetFileNameWithoutExtension(_loadScreenshot)] = LoadPNG(_loadScreenshot);
-                _loadScreenshot = null;
+                Log.Error(ex);
             }
         }
 
         public void OnGUI()
         {
-            if (_visible)
+            try
             {
-                var buttonStyle = new GUIStyle(GUI.skin.button);
-                buttonStyle.alignment = TextAnchor.MiddleLeft;
-
-                _windowRect = GUILayout.Window(GetInstanceID(), _windowRect, (windowID) =>
+                if (_visible)
                 {
-                    _scrollPos = GUILayout.BeginScrollView(_scrollPos, HighLogic.Skin.scrollView);
+                    var buttonStyle = new GUIStyle(GUI.skin.button);
+                    buttonStyle.alignment = TextAnchor.MiddleLeft;
 
-                    foreach (var save in _saves)
+                    _windowRect = GUILayout.Window(GetInstanceID(), _windowRect, (windowID) =>
                     {
-                        var content = new GUIContent();
-                        content.text = save.ButtonText;
+                        _scrollPos = GUILayout.BeginScrollView(_scrollPos, HighLogic.Skin.scrollView);
 
-                        var name = Path.GetFileNameWithoutExtension(save.SaveFile.Name);
-                        Texture2D screenshot;
-                        if (_screenshots.TryGetValue(name, out screenshot))
-                        { 
-                            content.image = screenshot;
-                        }
-                        else
+                        foreach (var save in _saves)
                         {
-                            content.image = _placeholder;
+                            var content = new GUIContent();
+                            content.text = save.ButtonText;
+
+                            var name = Path.GetFileNameWithoutExtension(save.SaveFile.Name);
+                            Texture2D screenshot;
+                            if (_screenshots.TryGetValue(name, out screenshot))
+                            {
+                                content.image = screenshot;
+                            }
+                            else
+                            {
+                                content.image = _placeholder;
+                            }
+
+                            if (GUILayout.Button(content, buttonStyle))
+                            {
+                                Log.Info("Clicked save: {0}", save.SaveFile.Name);
+                                _saveToLoad = save;
+                            }
                         }
 
-                        if (GUILayout.Button(content, buttonStyle))
-                        {
-                            _saveToLoad = save;
-                        }
-                    }
-
-                    GUILayout.EndScrollView();
-                    GUI.DragWindow();
-                }, "Load Game", HighLogic.Skin.window);
+                        GUILayout.EndScrollView();
+                        GUI.DragWindow();
+                    }, "Load Game", HighLogic.Skin.window);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
             }
         }
 
         private void LoadSaveGame(SaveGameInfo save)
         {
+            Log.Info("Loading save: {0}", save.SaveFile.Name);
             var name = Path.GetFileNameWithoutExtension(save.SaveFile.Name);
             var game = GamePersistence.LoadGame(name, HighLogic.SaveFolder, true, false);
             game.Start();
