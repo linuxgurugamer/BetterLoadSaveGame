@@ -33,19 +33,23 @@ namespace BetterLoadSaveGame
             string funds = "";
             if (MetaData.TryGetValue("funds", out funds))
             {
-                double fundsAmount = int.Parse(funds) / 1000.0;
-                string suffix = "k";
-                if (fundsAmount > 1000)
+                double fundsAmount;
+                if (double.TryParse(funds, out fundsAmount))
                 {
                     fundsAmount /= 1000.0;
-                    suffix = "m";
+                    string suffix = "k";
+                    if (fundsAmount > 1000)
+                    {
+                        fundsAmount /= 1000.0;
+                        suffix = "m";
+                    }
+                    if (fundsAmount > 1000)
+                    {
+                        fundsAmount /= 1000.0;
+                        suffix = "b";
+                    }
+                    funds = Math.Round(fundsAmount, 1).ToString() + suffix;
                 }
-                if (fundsAmount > 1000)
-                {
-                    fundsAmount /= 1000.0;
-                    suffix = "b";
-                }
-                funds = Math.Round(fundsAmount, 1).ToString() + suffix;
             }
             ButtonText = String.Format("  {0}\n  {1}\n  {2} funds", SaveFile.LastWriteTime, Path.GetFileNameWithoutExtension(SaveFile.Name), funds);
         }
