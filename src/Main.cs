@@ -138,7 +138,7 @@ namespace BetterLoadSaveGame
 
                 _windowRect = GUILayout.Window(GetInstanceID(), _windowRect, (windowID) =>
                 {
-                    _scrollPos = GUILayout.BeginScrollView(_scrollPos);
+                    _scrollPos = GUILayout.BeginScrollView(_scrollPos, HighLogic.Skin.scrollView);
 
                     foreach (var save in _saves)
                     {
@@ -164,7 +164,7 @@ namespace BetterLoadSaveGame
 
                     GUILayout.EndScrollView();
                     GUI.DragWindow();
-                }, "Load Game");
+                }, "Load Game", HighLogic.Skin.window);
             }
         }
 
