@@ -16,22 +16,49 @@ namespace BetterLoadSaveGame
         private bool _toggleVisibility = false;
         private FileSystemWatcher _watcher;
         private string _saveDir;
+        private string _saveScreenshot;
+        private string _loadScreenshot;
+        private Dictionary<string, Texture2D> _screenshots = new Dictionary<string, Texture2D>();
+
+        private Texture2D LoadPNG(string filePath)
+        {
+            Texture2D tex = null;
+            byte[] fileData;
+
+            if (File.Exists(filePath))
+            {
+                fileData = File.ReadAllBytes(filePath);
+                tex = new Texture2D(2, 2);
+                tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
+                TextureScale.Bilinear(tex, 154, 87);
+            }
+            return tex;
+        }
 
         public void Start()
         {
             _saveDir = Path.Combine(Path.Combine(KSPUtil.ApplicationRootPath, "saves"), HighLogic.SaveFolder);
-            _watcher = new FileSystemWatcher(_saveDir, "*.sfs");
+            _watcher = new FileSystemWatcher(_saveDir);
             _watcher.Changed += OnSave;
             _watcher.Created += OnSave;
             _watcher.EnableRaisingEvents = true;
-            LoadExistingSaveGames();
+
+            foreach (var file in Directory.GetFiles(_saveDir, "*.png"))
+            {
+                _screenshots[Path.GetFileNameWithoutExtension(file)] = LoadPNG(file);
+            }
         }
 
         private void OnSave(object sender, FileSystemEventArgs e)
         {
-            var screenShotFileName = Path.ChangeExtension(e.FullPath, ".png");
-            Application.CaptureScreenshot(screenShotFileName);
-            LoadExistingSaveGames();
+            if (e.FullPath.EndsWith(".sfs"))
+            {
+                _saveScreenshot = Path.ChangeExtension(e.FullPath, ".png");
+            }
+            else if (e.FullPath.EndsWith(".png"))
+            {
+                _loadScreenshot = e.FullPath;
+            }
         }
 
         private void LoadExistingSaveGames()
@@ -47,6 +74,11 @@ namespace BetterLoadSaveGame
                 {
                     _toggleVisibility = true;
                     _visible = !_visible;
+
+                    if (_visible)
+                    {
+                        LoadExistingSaveGames();
+                    }
                 }
             }
             else
@@ -59,6 +91,18 @@ namespace BetterLoadSaveGame
                 _visible = false;
                 LoadSaveGame(_saveToLoad);
                 _saveToLoad = null;
+            }
+
+            if (_saveScreenshot != null)
+            {
+                Application.CaptureScreenshot(_saveScreenshot);
+                _saveScreenshot = null;
+            }
+
+            if (_loadScreenshot != null)
+            {
+                _screenshots[Path.GetFileNameWithoutExtension(_loadScreenshot)] = LoadPNG(_loadScreenshot);
+                _loadScreenshot = null;
             }
         }
 
@@ -78,9 +122,11 @@ namespace BetterLoadSaveGame
                         var content = new GUIContent();
                         content.text = save.ButtonText;
 
-                        if (save.ButtonImage != null)
-                        {
-                            content.image = save.ButtonImage;
+                        var name = Path.GetFileNameWithoutExtension(save.SaveFile.Name);
+                        Texture2D screenshot;
+                        if (_screenshots.TryGetValue(name, out screenshot))
+                        { 
+                            content.image = screenshot;
                         }
 
                         if (GUILayout.Button(content, buttonStyle))
