@@ -30,7 +30,7 @@ namespace BetterLoadSaveGame
                 fileData = File.ReadAllBytes(filePath);
                 tex = new Texture2D(2, 2);
                 tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
-                TextureScale.Bilinear(tex, 154, 87);
+                TextureScale.Bilinear(tex, 100, 62);
             }
             return tex;
         }
