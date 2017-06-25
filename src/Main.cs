@@ -63,7 +63,12 @@ namespace BetterLoadSaveGame
 
         private void LoadExistingSaveGames()
         {
-            _saves = SaveGameManager.GetAllSaves(_saveDir);
+            _saves = new List<SaveGameInfo>();
+            foreach (var saveFile in Directory.GetFiles(_saveDir, "*.sfs"))
+            {
+                _saves.Add(new SaveGameInfo(saveFile));
+            }
+            _saves.Sort((a, b) => b.SaveFile.LastWriteTime.CompareTo(a.SaveFile.LastWriteTime));
         }
 
         public void Update()

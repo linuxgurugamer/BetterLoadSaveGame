@@ -35,11 +35,4 @@ namespace BetterLoadSaveGame
 
         public string ButtonText { get; private set; }
     }
-
-    public class SaveData
-    {
-        public string Name;
-        public IEnumerable<SaveData> Sections;
-        public IEnumerable<KeyValuePair<string, string>> Values;
-    }
 }

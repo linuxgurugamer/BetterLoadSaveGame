@@ -50,7 +50,6 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="SaveGameInfo.cs" />
-    <Compile Include="SaveGameManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
