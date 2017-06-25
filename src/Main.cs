@@ -8,9 +8,11 @@ namespace BetterLoadSaveGame
     [KSPAddon(KSPAddon.Startup.FlightAndKSC, false)]
     public class Main : MonoBehaviour
     {
+        private const int WIDTH = 400;
+        private const int HEIGHT = 500;
         private SaveGameInfo _saveToLoad;
         private List<SaveGameInfo> _saves;
-        private Rect _windowRect = new Rect(100, 100, 400, 500);
+        private Rect _windowRect;
         private Vector2 _scrollPos;
         private bool _visible = false;
         private bool _toggleVisibility = false;
@@ -47,6 +49,8 @@ namespace BetterLoadSaveGame
             {
                 _screenshots[Path.GetFileNameWithoutExtension(file)] = LoadPNG(file);
             }
+
+            _windowRect = new Rect((Screen.width - WIDTH) / 2, (Screen.height - HEIGHT) / 2, WIDTH, HEIGHT);
         }
 
         private void OnSave(object sender, FileSystemEventArgs e)
@@ -71,6 +75,17 @@ namespace BetterLoadSaveGame
             _saves.Sort((a, b) => b.SaveFile.LastWriteTime.CompareTo(a.SaveFile.LastWriteTime));
         }
 
+        private void SetVisible(bool visible)
+        {
+            _visible = visible;
+            FlightDriver.SetPause(visible);
+
+            if (_visible)
+            {
+                LoadExistingSaveGames();
+            }
+        }
+
         public void Update()
         {
             if (Input.GetKeyDown(KeyCode.F7))
@@ -78,12 +93,7 @@ namespace BetterLoadSaveGame
                 if (!_toggleVisibility)
                 {
                     _toggleVisibility = true;
-                    _visible = !_visible;
-
-                    if (_visible)
-                    {
-                        LoadExistingSaveGames();
-                    }
+                    SetVisible(!_visible);
                 }
             }
             else
@@ -93,7 +103,7 @@ namespace BetterLoadSaveGame
 
             if (_saveToLoad != null)
             {
-                _visible = false;
+                SetVisible(false);
                 LoadSaveGame(_saveToLoad);
                 _saveToLoad = null;
             }
