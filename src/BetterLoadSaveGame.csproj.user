@@ -3,6 +3,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartAction>Program</StartAction>
     <StartProgram>G:\Games\kerbal\1.2.2_mod_dev\KSP_x64.exe</StartProgram>
+    <StartWorkingDirectory>G:\Games\kerbal\1.2.2_mod_dev</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>

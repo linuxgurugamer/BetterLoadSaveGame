@@ -21,6 +21,7 @@ namespace BetterLoadSaveGame
         private string _saveScreenshot;
         private string _loadScreenshot;
         private Dictionary<string, Texture2D> _screenshots = new Dictionary<string, Texture2D>();
+        private Texture2D _placeholder;
 
         private Texture2D LoadPNG(string filePath)
         {
@@ -33,6 +34,10 @@ namespace BetterLoadSaveGame
                 tex = new Texture2D(2, 2);
                 tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
                 TextureScale.Bilinear(tex, 100, 62);
+            }
+            else
+            {
+                Debug.Log("File not found: " + filePath);
             }
             return tex;
         }
@@ -51,6 +56,9 @@ namespace BetterLoadSaveGame
             }
 
             _windowRect = new Rect((Screen.width - WIDTH) / 2, (Screen.height - HEIGHT) / 2, WIDTH, HEIGHT);
+
+            // Supposedly should be able to load the texture using GameDatabase.Instance.GetTexture but I can't get it to work :(
+            _placeholder = LoadPNG(Path.GetFullPath("GameData/BetterLoadSaveGame/placeholder.png"));
         }
 
         private void OnSave(object sender, FileSystemEventArgs e)
@@ -142,6 +150,10 @@ namespace BetterLoadSaveGame
                         if (_screenshots.TryGetValue(name, out screenshot))
                         { 
                             content.image = screenshot;
+                        }
+                        else
+                        {
+                            content.image = _placeholder;
                         }
 
                         if (GUILayout.Button(content, buttonStyle))
