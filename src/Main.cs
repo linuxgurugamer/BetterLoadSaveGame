@@ -8,6 +8,13 @@ namespace BetterLoadSaveGame
     [KSPAddon(KSPAddon.Startup.FlightAndKSC, false)]
     public class Main : MonoBehaviour
     {
+        private enum SortMode
+        {
+            FileTime,
+            GameTime,
+            Name
+        }
+
         private const int WIDTH = 400;
         private const int HEIGHT = 500;
         private SaveGameInfo _saveToLoad;
@@ -22,6 +29,8 @@ namespace BetterLoadSaveGame
         private string _loadScreenshot;
         private Dictionary<string, Texture2D> _screenshots = new Dictionary<string, Texture2D>();
         private Texture2D _placeholder;
+        private string _filterText = "";
+        private SortMode _sortMode = SortMode.FileTime;
 
         private Texture2D LoadPNG(string filePath)
         {
@@ -98,7 +107,29 @@ namespace BetterLoadSaveGame
             {
                 _saves.Add(new SaveGameInfo(saveFile));
             }
-            _saves.Sort((a, b) => b.SaveFile.LastWriteTime.CompareTo(a.SaveFile.LastWriteTime));
+            UpdateSort(SortMode.FileTime);
+        }
+
+        private void UpdateSort(SortMode mode)
+        {
+            _sortMode = mode;
+
+            switch (mode)
+            {
+                case SortMode.FileTime:
+                    Log.Info("Sorting by file time");
+                    _saves.Sort((a, b) => b.SaveFile.LastWriteTime.CompareTo(a.SaveFile.LastWriteTime));
+                    break;
+
+                case SortMode.GameTime:
+                    Log.Info("Sorting by game time");
+                    break;
+
+                case SortMode.Name:
+                    Log.Info("Sorting by file time");
+                    _saves.Sort((a, b) => a.SaveFile.Name.CompareTo(b.SaveFile.Name));
+                    break;
+            }
         }
 
         private void SetVisible(bool visible)
@@ -157,6 +188,14 @@ namespace BetterLoadSaveGame
             }
         }
 
+        private void SortButton(SortMode mode, string text)
+        {
+            if (GUILayout.Toggle(_sortMode == mode, text, GUILayout.ExpandWidth(false)) && _sortMode != mode)
+            {
+                UpdateSort(mode);
+            }
+        }
+
         public void OnGUI()
         {
             try
@@ -168,28 +207,48 @@ namespace BetterLoadSaveGame
 
                     _windowRect = GUILayout.Window(GetInstanceID(), _windowRect, (windowID) =>
                     {
+                        GUILayout.BeginHorizontal();
+
+                        GUILayout.Label("Sort:", GUILayout.ExpandWidth(false));
+                        SortButton(SortMode.FileTime, "File Time");
+                        SortButton(SortMode.GameTime, "Game Time");
+                        SortButton(SortMode.Name, "Name");
+
+                        GUILayout.EndHorizontal();
+
+                        GUILayout.BeginHorizontal();
+
+                        GUILayout.Label("Filter:", GUILayout.ExpandWidth(false));
+                        _filterText = GUILayout.TextField(_filterText);
+
+                        GUILayout.EndHorizontal();
+
                         _scrollPos = GUILayout.BeginScrollView(_scrollPos, HighLogic.Skin.scrollView);
 
                         foreach (var save in _saves)
                         {
-                            var content = new GUIContent();
-                            content.text = save.ButtonText;
-
                             var name = Path.GetFileNameWithoutExtension(save.SaveFile.Name);
-                            Texture2D screenshot;
-                            if (_screenshots.TryGetValue(name, out screenshot))
-                            {
-                                content.image = screenshot;
-                            }
-                            else
-                            {
-                                content.image = _placeholder;
-                            }
 
-                            if (GUILayout.Button(content, buttonStyle))
+                            if (_filterText == "" || name.Contains(_filterText))
                             {
-                                Log.Info("Clicked save: {0}", save.SaveFile.Name);
-                                _saveToLoad = save;
+                                var content = new GUIContent();
+                                content.text = save.ButtonText;
+
+                                Texture2D screenshot;
+                                if (_screenshots.TryGetValue(name, out screenshot))
+                                {
+                                    content.image = screenshot;
+                                }
+                                else
+                                {
+                                    content.image = _placeholder;
+                                }
+
+                                if (GUILayout.Button(content, buttonStyle))
+                                {
+                                    Log.Info("Clicked save: {0}", save.SaveFile.Name);
+                                    _saveToLoad = save;
+                                }
                             }
                         }
 
