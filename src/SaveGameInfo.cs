@@ -51,9 +51,27 @@ namespace BetterLoadSaveGame
                     funds = Math.Round(fundsAmount, 1).ToString() + suffix;
                 }
             }
-            ButtonText = String.Format("  {0}\n  {1}\n  {2} funds", SaveFile.LastWriteTime, Path.GetFileNameWithoutExtension(SaveFile.Name), funds);
+
+            string gameTime = "";
+            if (MetaData.TryGetValue("UT", out gameTime))
+            {
+                double gameTimeVal;
+                if (double.TryParse(gameTime, out gameTimeVal))
+                {
+                    GameTime = gameTimeVal;
+                    GameTimeText = KSPUtil.PrintDate(GameTime, includeTime: true);
+                }
+            }
+
+            ButtonText = String.Format("  {0}\n  {1}\n  {2} funds\n  {3}",
+                SaveFile.LastWriteTime,
+                Path.GetFileNameWithoutExtension(SaveFile.Name),
+                funds,
+                GameTimeText);
         }
 
         public string ButtonText { get; private set; }
+        public double GameTime { get; private set; }
+        public string GameTimeText { get; private set; }
     }
 }

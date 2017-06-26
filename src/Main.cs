@@ -123,6 +123,7 @@ namespace BetterLoadSaveGame
 
                 case SortMode.GameTime:
                     Log.Info("Sorting by game time");
+                    _saves.Sort((a, b) => b.GameTime.CompareTo(a.GameTime));
                     break;
 
                 case SortMode.Name:
