@@ -27,8 +27,3 @@ Highly recommend also using a mod like [Dated Quick Saves](http://forum.kerbalsp
 ## Current state
 
 This is my first mod and it's a work in progress right now, and I'm planning to add more features before it's done. I've also only tested it with KSP 1.2.2 so far. If it doesn't work in another version, or you have other troubles with it, please let me know.
-
-Some changes I'd like to make:
-* Filtering/sorting options
-* Display more info about each game - maybe the active vessel name
-* Any ideas?

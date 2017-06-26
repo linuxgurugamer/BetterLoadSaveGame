@@ -245,7 +245,7 @@ namespace BetterLoadSaveGame
                                     content.image = _placeholder;
                                 }
 
-                                if (GUILayout.Button(content, buttonStyle))
+                                if (GUILayout.Button(content, buttonStyle, GUILayout.Height(72)))
                                 {
                                     Log.Info("Clicked save: {0}", save.SaveFile.Name);
                                     _saveToLoad = save;
