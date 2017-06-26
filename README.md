@@ -10,7 +10,7 @@ This mod attempts to fix that by:
 
 Looks like this:
 
-![screenshot](screenshot.png)
+![screenshot](screenshot.jpg)
 
 ## Installation
 
