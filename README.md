@@ -26,4 +26,8 @@ Highly recommend also using a mod like [Dated Quick Saves](http://forum.kerbalsp
 
 ## Current state
 
-This is my first mod and it's a work in progress right now, and I'm planning to add more features before it's done. I've also only tested it with KSP 1.2.2 so far. If it doesn't work in another version, or you have other troubles with it, please let me know.
+This is my first mod and it's a work in progress right now, and I'm planning to add more features before it's done.
+
+Currently tested working with KSP 1.2.2 and 1.3.
+
+Please let me know if it's not working with another version, or if you have any other problems with it or suggestions, and I'll look into it.

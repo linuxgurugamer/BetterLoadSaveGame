@@ -26,7 +26,7 @@ namespace BetterLoadSaveGame
                     var idx = line.IndexOf("=");
                     var key = line.Substring(0, idx).Trim();
                     var value = line.Substring(idx + 1).Trim();
-                    MetaData.Add(key, value);
+                    MetaData[key] = value;
                 }
             }
 
