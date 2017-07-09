@@ -36,6 +36,8 @@ Please let me know if it's not working with another version, or if you have any 
 
 1.2
  - Increased screenshot and window size
+ - Reduced memory usage
+ - New placeholder image
 
 1.1
  - Added KSP 1.3 support

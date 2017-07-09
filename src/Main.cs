@@ -25,10 +25,11 @@ namespace BetterLoadSaveGame
         private bool _toggleVisibility = false;
         private FileSystemWatcher _watcher;
         private string _saveDir;
-        private string _saveScreenshot;
-        private string _loadScreenshot;
+        private Queue<string> _saveScreenshots = new Queue<string>();
+        private Queue<string> _loadScreenshots = new Queue<string>();
         private Dictionary<string, Texture2D> _screenshots = new Dictionary<string, Texture2D>();
         private Texture2D _placeholder;
+        private Texture2D _loadingPlaceholder;
         private string _filterText = "";
         private SortMode _sortMode = SortMode.FileTime;
 
@@ -61,15 +62,11 @@ namespace BetterLoadSaveGame
                 _watcher.Created += OnSave;
                 _watcher.EnableRaisingEvents = true;
 
-                foreach (var file in Directory.GetFiles(_saveDir, "*.png"))
-                {
-                    _screenshots[Path.GetFileNameWithoutExtension(file)] = LoadPNG(file);
-                }
-
                 _windowRect = new Rect((Screen.width - WIDTH) / 2, (Screen.height - HEIGHT) / 2, WIDTH, HEIGHT);
 
                 // Supposedly should be able to load the texture using GameDatabase.Instance.GetTexture but I can't get it to work :(
                 _placeholder = LoadPNG(Path.GetFullPath("GameData/BetterLoadSaveGame/placeholder.png"));
+                _loadingPlaceholder = LoadPNG(Path.GetFullPath("GameData/BetterLoadSaveGame/loading.png"));
 
                 Log.Info("Started");
             }
@@ -86,11 +83,7 @@ namespace BetterLoadSaveGame
                 Log.Info("Detected file change: {0}", e.Name);
                 if (e.FullPath.EndsWith(".sfs"))
                 {
-                    _saveScreenshot = Path.ChangeExtension(e.FullPath, ".png");
-                }
-                else if (e.FullPath.EndsWith(".png"))
-                {
-                    _loadScreenshot = e.FullPath;
+                    _saveScreenshots.Enqueue(Path.ChangeExtension(e.FullPath, ".png"));
                 }
             }
             catch (Exception ex)
@@ -143,6 +136,11 @@ namespace BetterLoadSaveGame
             {
                 LoadExistingSaveGames();
             }
+            else
+            {
+                // Clear screenshots when UI not shown to save memory
+                _screenshots.Clear();
+            }
         }
 
         public void Update()
@@ -169,18 +167,28 @@ namespace BetterLoadSaveGame
                     _saveToLoad = null;
                 }
 
-                if (_saveScreenshot != null)
+                if (_saveScreenshots.Count > 0)
                 {
-                    Log.Info("Capturing screenshot: {0}", _saveScreenshot);
-                    Application.CaptureScreenshot(_saveScreenshot);
-                    _saveScreenshot = null;
+                    var filename = _saveScreenshots.Dequeue();
+                    Log.Info("Capturing screenshot: {0}", filename);
+                    Application.CaptureScreenshot(filename);
                 }
 
-                if (_loadScreenshot != null)
+                if(_loadScreenshots.Count > 0)
                 {
-                    Log.Info("Loading save image: {0}", _loadScreenshot);
-                    _screenshots[Path.GetFileNameWithoutExtension(_loadScreenshot)] = LoadPNG(_loadScreenshot);
-                    _loadScreenshot = null;
+                    var filename = _loadScreenshots.Dequeue();
+                    if (File.Exists(filename))
+                    {
+                        try
+                        {
+                            Log.Info("Loading screenshot: {0}", filename);
+                            _screenshots[Path.GetFileNameWithoutExtension(filename)] = LoadPNG(filename);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -226,8 +234,13 @@ namespace BetterLoadSaveGame
 
                         _scrollPos = GUILayout.BeginScrollView(_scrollPos, HighLogic.Skin.scrollView);
 
+                        int saveIndex = 0;
                         foreach (var save in _saves)
                         {
+                            // Determine if the button is visible.
+                            // This is not very accurate...
+                            bool isVisible = (saveIndex * 100 - _scrollPos.y) < HEIGHT;
+
                             var name = Path.GetFileNameWithoutExtension(save.SaveFile.Name);
 
                             if (_filterText == "" || name.Contains(_filterText))
@@ -242,7 +255,25 @@ namespace BetterLoadSaveGame
                                 }
                                 else
                                 {
-                                    content.image = _placeholder;
+                                    content.image = _loadingPlaceholder;
+
+                                    // Load the screenshot for a button if it's visible
+                                    if (isVisible)
+                                    {
+                                        var filename = Path.ChangeExtension(save.SaveFile.FullName, "png");
+                                        if (!_loadScreenshots.Contains(filename))
+                                        {
+                                            if (File.Exists(filename))
+                                            {
+                                                Log.Info("Will load screenshot: {0}", filename);
+                                                _loadScreenshots.Enqueue(filename);
+                                            }
+                                            else
+                                            {
+                                                content.image = _placeholder;
+                                            }
+                                        }
+                                    }
                                 }
 
                                 if (GUILayout.Button(content, buttonStyle))
@@ -251,6 +282,7 @@ namespace BetterLoadSaveGame
                                     _saveToLoad = save;
                                 }
                             }
+                            saveIndex++;
                         }
 
                         GUILayout.EndScrollView();
