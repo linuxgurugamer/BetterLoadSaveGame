@@ -15,8 +15,8 @@ namespace BetterLoadSaveGame
             Name
         }
 
-        private const int WIDTH = 400;
-        private const int HEIGHT = 500;
+        private const int WIDTH = 500;
+        private const int HEIGHT = 600;
         private SaveGameInfo _saveToLoad;
         private List<SaveGameInfo> _saves;
         private Rect _windowRect;
@@ -42,7 +42,7 @@ namespace BetterLoadSaveGame
                 fileData = File.ReadAllBytes(filePath);
                 tex = new Texture2D(2, 2);
                 tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
-                TextureScale.Bilinear(tex, 100, 62);
+                TextureScale.Bilinear(tex, 150, 94);
             }
             else
             {
@@ -245,7 +245,7 @@ namespace BetterLoadSaveGame
                                     content.image = _placeholder;
                                 }
 
-                                if (GUILayout.Button(content, buttonStyle, GUILayout.Height(72)))
+                                if (GUILayout.Button(content, buttonStyle))
                                 {
                                     Log.Info("Clicked save: {0}", save.SaveFile.Name);
                                     _saveToLoad = save;

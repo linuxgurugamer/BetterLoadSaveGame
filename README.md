@@ -31,3 +31,14 @@ This is my first mod and it's a work in progress right now, and I'm planning to 
 Currently tested working with KSP 1.2.2 and 1.3.
 
 Please let me know if it's not working with another version, or if you have any other problems with it or suggestions, and I'll look into it.
+
+## Change log
+
+1.2
+ - Increased screenshot and window size
+
+1.1
+ - Added KSP 1.3 support
+
+1.0
+ - Initial release
