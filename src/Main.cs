@@ -169,9 +169,18 @@ namespace BetterLoadSaveGame
 
                 if (_saveScreenshots.Count > 0)
                 {
-                    var filename = _saveScreenshots.Dequeue();
+                    var filename = _saveScreenshots.Peek();
                     Log.Info("Capturing screenshot: {0}", filename);
-                    Application.CaptureScreenshot(filename);
+                    try
+                    {
+                        Application.CaptureScreenshot(filename);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error("Failed to capture screenshot");
+                        Log.Error(ex);
+                    }
+                    _saveScreenshots.Dequeue();
                 }
 
                 if(_loadScreenshots.Count > 0)
