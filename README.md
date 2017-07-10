@@ -34,6 +34,9 @@ Please let me know if it's not working with another version, or if you have any 
 
 ## Change log
 
+1.2.1
+ - Reduced lag when loading screenshots while scrolling
+
 1.2
  - Increased screenshot and window size
  - Reduced memory usage

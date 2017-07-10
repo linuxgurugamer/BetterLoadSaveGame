@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using UnityEngine;
 
 namespace BetterLoadSaveGame
@@ -27,28 +28,36 @@ namespace BetterLoadSaveGame
         private string _saveDir;
         private Queue<string> _saveScreenshots = new Queue<string>();
         private Queue<string> _loadScreenshots = new Queue<string>();
+        private List<string> _shownScreenshots = new List<string>();
+        private Queue<KeyValuePair<string, byte[]>> _screenshotData = new Queue<KeyValuePair<string, byte[]>>();
         private Dictionary<string, Texture2D> _screenshots = new Dictionary<string, Texture2D>();
         private Texture2D _placeholder;
         private Texture2D _loadingPlaceholder;
         private string _filterText = "";
         private SortMode _sortMode = SortMode.FileTime;
+        private object _screenshotLoaderLock = new object();
+        private AutoResetEvent _screenshotLoaderEvent = new AutoResetEvent(false);
+        private Thread _screenshotLoader;
+        private bool _exiting = false;
 
         private Texture2D LoadPNG(string filePath)
         {
-            Texture2D tex = null;
-            byte[] fileData;
-
             if (File.Exists(filePath))
             {
-                fileData = File.ReadAllBytes(filePath);
-                tex = new Texture2D(2, 2);
-                tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
-                TextureScale.Bilinear(tex, 150, 94);
+                return CreateTexture(File.ReadAllBytes(filePath));
             }
             else
             {
                 Log.Error("File not found: " + filePath);
             }
+            return null;
+        }
+
+        private Texture2D CreateTexture(byte[] fileData)
+        {
+            var tex = new Texture2D(2, 2);
+            tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
+            TextureScale.Bilinear(tex, 150, 94);
             return tex;
         }
 
@@ -68,11 +77,55 @@ namespace BetterLoadSaveGame
                 _placeholder = LoadPNG(Path.GetFullPath("GameData/BetterLoadSaveGame/placeholder.png"));
                 _loadingPlaceholder = LoadPNG(Path.GetFullPath("GameData/BetterLoadSaveGame/loading.png"));
 
+                _screenshotLoader = new Thread(ScreenshotLoader);
+                _screenshotLoader.Start();
+
                 Log.Info("Started");
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
+            }
+        }
+
+        /// <summary>
+        /// Thread to handle loading screenshots. This is done in a thread to avoid lagging out the game when
+        /// scrolling through the list and loading lots of images. Unfortunately, creating a texture from the
+        /// image still has to be done on the main thread and takes some time, so there's still some lag.
+        /// 
+        /// Shared:
+        ///     _loadScreenshots    - Queue of screenshots to load
+        ///     _screenshotData     - File data of loaded screenshots
+        ///     _exiting            - Exit condition, triggered on OnDisable (don't bother to lock on this one)
+        /// 
+        /// Main thread:
+        ///     _screenshots        - Textures created from screenshot data
+        ///     _shownScreenshots   - List of all screenshots that have been requested to load so far.
+        /// </summary>
+        private void ScreenshotLoader()
+        {
+            while(!_exiting)
+            {
+                string filename = null;
+                lock (_screenshotLoaderLock)
+                {
+                    if (_loadScreenshots.Count > 0)
+                    {
+                        filename = _loadScreenshots.Dequeue();
+                    }
+                }
+                if (filename == null)
+                {
+                    _screenshotLoaderEvent.WaitOne();
+                }
+                else
+                {
+                    var data = File.ReadAllBytes(filename);
+                    lock (_screenshotLoaderLock)
+                    {
+                        _screenshotData.Enqueue(new KeyValuePair<string, byte[]>(Path.GetFileNameWithoutExtension(filename), data));
+                    }
+                }
             }
         }
 
@@ -101,6 +154,18 @@ namespace BetterLoadSaveGame
                 _saves.Add(new SaveGameInfo(saveFile));
             }
             UpdateSort(SortMode.FileTime);
+        }
+
+        private void LoadScreenshots()
+        {
+            lock (_screenshotLoaderLock)
+            {
+                foreach (var file in Directory.GetFiles(_saveDir, "*.png"))
+                {
+                    _loadScreenshots.Enqueue(file);
+                }
+            }
+            _screenshotLoaderEvent.Set();
         }
 
         private void UpdateSort(SortMode mode)
@@ -140,6 +205,11 @@ namespace BetterLoadSaveGame
             {
                 // Clear screenshots when UI not shown to save memory
                 _screenshots.Clear();
+                _shownScreenshots.Clear();
+                lock(_screenshotLoaderLock)
+                {
+                    _loadScreenshots.Clear();
+                }
             }
         }
 
@@ -183,19 +253,19 @@ namespace BetterLoadSaveGame
                     _saveScreenshots.Dequeue();
                 }
 
-                if(_loadScreenshots.Count > 0)
+                lock (_screenshotLoaderLock)
                 {
-                    var filename = _loadScreenshots.Dequeue();
-                    if (File.Exists(filename))
+                    if (_screenshotData.Count > 0)
                     {
-                        try
-                        {
-                            Log.Info("Loading screenshot: {0}", filename);
-                            _screenshots[Path.GetFileNameWithoutExtension(filename)] = LoadPNG(filename);
+                        if (_visible)
+                        { 
+                            var item = _screenshotData.Dequeue();
+                            Log.Info("Creating texture for screenshot: {0}", item.Key);
+                            _screenshots[item.Key] = CreateTexture(item.Value);
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            Log.Error(ex);
+                            _screenshotData.Clear();
                         }
                     }
                 }
@@ -270,17 +340,26 @@ namespace BetterLoadSaveGame
                                     if (isVisible)
                                     {
                                         var filename = Path.ChangeExtension(save.SaveFile.FullName, "png");
-                                        if (!_loadScreenshots.Contains(filename))
+                                        if (File.Exists(filename))
                                         {
-                                            if (File.Exists(filename))
+                                            if (!_shownScreenshots.Contains(filename))
                                             {
+                                                _shownScreenshots.Add(filename);
+
                                                 Log.Info("Will load screenshot: {0}", filename);
-                                                _loadScreenshots.Enqueue(filename);
+                                                lock (_screenshotLoaderLock)
+                                                {
+                                                    if (!_loadScreenshots.Contains(filename))
+                                                    {
+                                                        _loadScreenshots.Enqueue(filename);
+                                                    }
+                                                }
+                                                _screenshotLoaderEvent.Set();
                                             }
-                                            else
-                                            {
-                                                content.image = _placeholder;
-                                            }
+                                        }
+                                        else
+                                        {
+                                            content.image = _placeholder;
                                         }
                                     }
                                 }
@@ -290,8 +369,8 @@ namespace BetterLoadSaveGame
                                     Log.Info("Clicked save: {0}", save.SaveFile.Name);
                                     _saveToLoad = save;
                                 }
+                                saveIndex++;
                             }
-                            saveIndex++;
                         }
 
                         GUILayout.EndScrollView();
@@ -311,6 +390,12 @@ namespace BetterLoadSaveGame
             var name = Path.GetFileNameWithoutExtension(save.SaveFile.Name);
             var game = GamePersistence.LoadGame(name, HighLogic.SaveFolder, true, false);
             game.Start();
+        }
+
+        public void OnDisable()
+        {
+            _exiting = true;
+            _screenshotLoaderEvent.Set();
         }
     }
 }
