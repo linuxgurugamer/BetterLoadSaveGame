@@ -199,6 +199,7 @@ namespace BetterLoadSaveGame
 
             if (_visible)
             {
+                _scrollPos = new Vector2();
                 LoadExistingSaveGames();
             }
             else

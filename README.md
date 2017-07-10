@@ -36,6 +36,7 @@ Please let me know if it's not working with another version, or if you have any 
 
 1.2.1
  - Reduced lag when loading screenshots while scrolling
+ - Reset scroll position when showing window
 
 1.2
  - Increased screenshot and window size
