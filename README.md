@@ -37,6 +37,8 @@ Please let me know if it's not working with another version, or if you have any 
 1.3
  - Reduced lag when loading screenshots while scrolling
  - Reset scroll position when showing window
+ - Fix screenshots not being displayed when filtering
+ - Fix broken funds display when loadmeta file missing
 
 1.2
  - Increased screenshot and window size

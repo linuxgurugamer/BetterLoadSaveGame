@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -48,7 +49,7 @@ namespace BetterLoadSaveGame
                         fundsAmount /= 1000.0;
                         suffix = "b";
                     }
-                    funds = Math.Round(fundsAmount, 1).ToString() + suffix;
+                    funds = Math.Round(fundsAmount, 1).ToString() + suffix + " funds";
                 }
             }
 
@@ -63,7 +64,7 @@ namespace BetterLoadSaveGame
                 }
             }
 
-            ButtonText = String.Format("  {0}\n  {1}\n  {2} funds\n  {3}",
+            ButtonText = String.Format("  {0}\n  {1}\n  {2}\n  {3}",
                 SaveFile.LastWriteTime,
                 Path.GetFileNameWithoutExtension(SaveFile.Name),
                 funds,
