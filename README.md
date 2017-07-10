@@ -34,7 +34,7 @@ Please let me know if it's not working with another version, or if you have any 
 
 ## Change log
 
-1.2.1
+1.3
  - Reduced lag when loading screenshots while scrolling
  - Reset scroll position when showing window
 
