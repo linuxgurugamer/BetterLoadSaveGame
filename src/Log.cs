@@ -8,7 +8,7 @@ namespace BetterLoadSaveGame
 {
     public static class Log
     {
-        private static bool _enableLogging = true;
+        private static bool _enableLogging = false;
 
         private static string GetLogMessage(object messageOrFormat, object[] args)
         {
@@ -30,18 +30,12 @@ namespace BetterLoadSaveGame
 
         public static void Error(object messageOrFormat, params object[] args)
         {
-            if (_enableLogging)
-            {
-                Debug.LogError(GetLogMessage(messageOrFormat, args));
-            }
+            Debug.LogError(GetLogMessage(messageOrFormat, args));
         }
 
         public static void Warn(object messageOrFormat, params object[] args)
         {
-            if (_enableLogging)
-            {
-                Debug.LogWarning(GetLogMessage(messageOrFormat, args));
-            }
+            Debug.LogWarning(GetLogMessage(messageOrFormat, args));
         }
     }
 }
