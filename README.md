@@ -28,11 +28,14 @@ Highly recommend also using a mod like [Dated Quick Saves](http://forum.kerbalsp
 
 This is my first mod and it's a work in progress right now, and I'm planning to add more features before it's done.
 
-Currently tested working with KSP 1.2.2 and 1.3.
+For KSP 1.2.2/1.3.x, use v1.3. For KSP 1.4.1, use v1.4.
 
 Please let me know if it's not working with another version, or if you have any other problems with it or suggestions, and I'll look into it.
 
 ## Change log
+
+1.4
+ - Rebuilt for KSP 1.4.1
 
 1.3
  - Reduced lag when loading screenshots while scrolling
