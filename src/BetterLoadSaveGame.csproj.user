@@ -2,8 +2,8 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartAction>Program</StartAction>
-    <StartProgram>G:\Modding\KSP\1.3.1_test\KSP_x64_Dbg.exe</StartProgram>
-    <StartWorkingDirectory>G:\Modding\KSP\1.3.1_test</StartWorkingDirectory>
+    <StartProgram>G:\Modding\KSP\1.4.1_test\KSP_x64.exe</StartProgram>
+    <StartWorkingDirectory>G:\Modding\KSP\1.4.1_test</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>

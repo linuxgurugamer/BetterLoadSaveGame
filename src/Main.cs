@@ -244,7 +244,7 @@ namespace BetterLoadSaveGame
                     Log.Info("Capturing screenshot: {0}", filename);
                     try
                     {
-                        Application.CaptureScreenshot(filename);
+                        ScreenCapture.CaptureScreenshot(filename);
                     }
                     catch (Exception ex)
                     {
