@@ -2,15 +2,15 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartAction>Program</StartAction>
-    <StartProgram>G:\Modding\KSP\1.4.1_test\KSP_x64.exe</StartProgram>
-    <StartWorkingDirectory>G:\Modding\KSP\1.4.1_test</StartWorkingDirectory>
+    <StartProgram>D:\code\ksp\BetterLoadSaveGame\KSP\KSP_x64.exe</StartProgram>
+    <StartWorkingDirectory>D:\code\ksp\BetterLoadSaveGame\KSP\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <StartAction>Program</StartAction>
-    <StartProgram>G:\Games\kerbal\1.2.2_mod_dev\KSP_x64.exe</StartProgram>
-    <StartWorkingDirectory>G:\Games\kerbal\1.2.2_mod_dev</StartWorkingDirectory>
+    <StartProgram>D:\code\ksp\BetterLoadSaveGame\KSP\KSP_x64.exe</StartProgram>
+    <StartWorkingDirectory>D:\code\ksp\BetterLoadSaveGame\KSP\</StartWorkingDirectory>
   </PropertyGroup>
 </Project>
