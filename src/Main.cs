@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 namespace BetterLoadSaveGame
@@ -9,16 +7,48 @@ namespace BetterLoadSaveGame
     public class Main : MonoBehaviour
     {
         private ScreenshotManager _screenshotManager = new ScreenshotManager();
+        private SaveGameCollection _saveGameCollection = new SaveGameCollection();
+        private LoadGameDialog _loadGameDialog;
 
         public void Start()
         {
-            SaveWatcher.Start();
-            _screenshotManager.Start();
+            try
+            {
+                SaveWatcher.Start();
+                _screenshotManager.Start();
+                _saveGameCollection.Start();
+
+                _loadGameDialog = new LoadGameDialog(_saveGameCollection, GetInstanceID());
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.ToString());
+            }
         }
 
         public void Update()
         {
-            _screenshotManager.Update();
+            try
+            {
+                _screenshotManager.Update();
+                _loadGameDialog.Update();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.ToString());
+            }
+        }
+
+        public void OnGUI()
+        {
+            try
+            {
+                _loadGameDialog.OnGUI();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.ToString());
+            }
         }
 
         public void OnDisable()

@@ -19,12 +19,10 @@ namespace BetterLoadSaveGame
             {
                 SaveWatcher.OnSave += OnSave;
 
-                var saveDir = SaveWatcher.SaveDir;
-
                 // Migrate old full screenshots to thumbnails
-                foreach (var file in Directory.GetFiles(saveDir, "*.*", SearchOption.AllDirectories))
+                foreach (var file in Directory.GetFiles(SaveWatcher.SaveDir, "*.*"))
                 {
-                    var fullPath = Path.Combine(saveDir, file);
+                    var fullPath = Path.Combine(SaveWatcher.SaveDir, file);
                     if (IsFullScreenshot(fullPath))
                     {
                         EnqueueAction(() => ResizeScreenshot(fullPath));

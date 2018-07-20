@@ -13,9 +13,7 @@ namespace BetterLoadSaveGame
 
         public static void Start()
         {
-            var saveDir = Path.Combine(KSPUtil.ApplicationRootPath, "saves");
-
-            _saveDir = Path.Combine(saveDir, HighLogic.SaveFolder);
+            _saveDir = Path.GetFullPath(Path.Combine(Path.Combine(KSPUtil.ApplicationRootPath, "saves"), HighLogic.SaveFolder));
             _watcher = new FileSystemWatcher(_saveDir);
             _watcher.EnableRaisingEvents = true;
         }
