@@ -14,11 +14,13 @@ namespace BetterLoadSaveGame
         private string _filterText = "";
         private Vector2 _scrollPos;
         private SaveGameCollection _saveGameCollection;
+        private ScreenshotManager _screenshotManager;
         private int _instanceID;
 
-        public LoadGameDialog(SaveGameCollection saveGameCollection, int instanceID)
+        public LoadGameDialog(SaveGameCollection saveGameCollection, ScreenshotManager screenshotManager, int instanceID)
         {
             _saveGameCollection = saveGameCollection;
+            _screenshotManager = screenshotManager;
             _instanceID = instanceID;
 
             _windowRect = new Rect((Screen.width - WIDTH) / 2, (Screen.height - HEIGHT) / 2, WIDTH, HEIGHT);
@@ -32,6 +34,10 @@ namespace BetterLoadSaveGame
                 {
                     _toggleVisibility = true;
                     Visible = !Visible;
+                    if (!Visible)
+                    {
+                        _screenshotManager.ClearScreenshots();
+                    }
                 }
             }
             else if (_toggleVisibility)
@@ -65,12 +71,21 @@ namespace BetterLoadSaveGame
             int saveIndex = 0;
             foreach (var save in _saveGameCollection.Saves)
             {
+                // Determine if the button is visible.
+                // This is not very accurate...
+                bool isVisible = (saveIndex * 100 - _scrollPos.y) < HEIGHT;
+
                 var name = Path.GetFileNameWithoutExtension(save.SaveFile.Name);
 
                 if (_filterText == "" || name.Contains(_filterText))
                 {
                     var content = new GUIContent();
                     content.text = save.ButtonText;
+
+                    if (isVisible)
+                    {
+                        content.image = _screenshotManager.GetScreenshot(save);
+                    }
 
                     if (GUILayout.Button(content, gameButtonStyle))
                     {

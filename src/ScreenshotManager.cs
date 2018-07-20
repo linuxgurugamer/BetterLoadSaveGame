@@ -13,6 +13,8 @@ namespace BetterLoadSaveGame
         private const int THUMB_WIDTH = 150;
         private const int THUMB_HEIGHT = 94;
 
+        private Dictionary<string, Texture2D> _loadedScreenshots = new Dictionary<string, Texture2D>();
+
         public void Start()
         {
             try
@@ -73,6 +75,29 @@ namespace BetterLoadSaveGame
             File.WriteAllBytes(outFile, bytes);
 
             File.Delete(filename);
+        }
+
+        public Texture2D GetScreenshot(SaveGameInfo save)
+        {
+            Texture2D screenshot = null;
+
+            var imageFile = save.SaveFile.FullName.Replace(".sfs", "-thumb.png");
+
+            if (!_loadedScreenshots.TryGetValue(imageFile, out screenshot) && File.Exists(imageFile))
+            {
+                Log.Info("Loading screenshot: " + imageFile);
+                var data = File.ReadAllBytes(imageFile);
+                screenshot = new Texture2D(2, 2);
+                screenshot.LoadImage(data);
+                _loadedScreenshots.Add(imageFile, screenshot);
+            }
+
+            return screenshot;
+        }
+
+        public void ClearScreenshots()
+        {
+            _loadedScreenshots.Clear();
         }
     }
 }

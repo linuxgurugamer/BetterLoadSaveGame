@@ -15,10 +15,11 @@ namespace BetterLoadSaveGame
             try
             {
                 SaveWatcher.Start();
+
                 _screenshotManager.Start();
                 _saveGameCollection.Start();
 
-                _loadGameDialog = new LoadGameDialog(_saveGameCollection, GetInstanceID());
+                _loadGameDialog = new LoadGameDialog(_saveGameCollection, _screenshotManager, GetInstanceID());
             }
             catch (Exception ex)
             {
