@@ -13,9 +13,20 @@ namespace BetterLoadSaveGame
 
         public static void Start()
         {
-            _saveDir = Path.GetFullPath(Path.Combine(Path.Combine(KSPUtil.ApplicationRootPath, "saves"), HighLogic.SaveFolder));
+            _saveDir = Path.Combine(Path.Combine(KSPUtil.ApplicationRootPath, "saves"), HighLogic.SaveFolder);
+
+            Log.Info("Watching save dir: " + _saveDir);
+
             _watcher = new FileSystemWatcher(_saveDir);
+
+            _watcher.Created += _watcher_Created;
+
             _watcher.EnableRaisingEvents = true;
+        }
+
+        private static void _watcher_Created(object sender, FileSystemEventArgs e)
+        {
+            Log.Info("watcher created: " + e.FullPath);
         }
 
         public static void Stop()
@@ -36,11 +47,14 @@ namespace BetterLoadSaveGame
         {
             add
             {
+                Log.Info("Adding a file watcher");
                 _watcher.Changed += value;
                 _watcher.Created += value;
             }
             remove
             {
+                Log.Info("Removing a file watcher");
+
                 _watcher.Changed -= value;
                 _watcher.Created -= value;
             }

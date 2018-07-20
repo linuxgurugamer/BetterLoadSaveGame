@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BetterLoadSaveGame
 {
-    class LoadGameDialog
+    class LoadGameDialog : ActionGenerator
     {
         private const int WIDTH = 500;
         private const int HEIGHT = 600;
@@ -26,8 +26,10 @@ namespace BetterLoadSaveGame
             _windowRect = new Rect((Screen.width - WIDTH) / 2, (Screen.height - HEIGHT) / 2, WIDTH, HEIGHT);
         }
 
-        public void Update()
+        public override void Update()
         {
+            base.Update();
+
             if (Input.GetKeyDown(KeyCode.F7))
             {
                 if (!_toggleVisibility)
@@ -90,6 +92,11 @@ namespace BetterLoadSaveGame
                     if (GUILayout.Button(content, gameButtonStyle))
                     {
                         Log.Info("Clicked save: {0}", save.SaveFile.Name);
+                        EnqueueAction(() =>
+                        {
+                            Visible = false;
+                            LoadSaveGame(save);
+                        });
                     }
                     saveIndex++;
                 }
@@ -141,6 +148,14 @@ namespace BetterLoadSaveGame
                 Log.Info("Changing visibility to: {0}", _visible);
                 FlightDriver.SetPause(_visible);
             }
+        }
+
+        private void LoadSaveGame(SaveGameInfo save)
+        {
+            Log.Info("Loading save: {0}", save.SaveFile.Name);
+            var name = Path.GetFileNameWithoutExtension(save.SaveFile.Name);
+            var game = GamePersistence.LoadGame(name, HighLogic.SaveFolder, true, false);
+            game.Start();
         }
     }
 }

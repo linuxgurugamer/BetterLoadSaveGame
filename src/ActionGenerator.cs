@@ -18,7 +18,7 @@ namespace BetterLoadSaveGame
             }
         }
 
-        public void Update()
+        public virtual void Update()
         {
             Queue<Action> frameQueue;
 

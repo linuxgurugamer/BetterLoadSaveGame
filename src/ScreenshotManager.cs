@@ -20,6 +20,8 @@ namespace BetterLoadSaveGame
         {
             try
             {
+                Log.Info("Registering to watch for screenshots and saves");
+
                 SaveWatcher.OnSave += OnSave;
 
                 // Migrate old full screenshots to thumbnails
@@ -42,6 +44,8 @@ namespace BetterLoadSaveGame
 
         private void OnSave(object sender, FileSystemEventArgs e)
         {
+            Log.Info("Detected file changed: " + e.FullPath);
+
             if (e.FullPath.EndsWith(".sfs"))
             {
                 EnqueueAction(() => SaveScreenshot(Path.ChangeExtension(e.FullPath, ".png")));
