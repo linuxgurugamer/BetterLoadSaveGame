@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace BetterLoadSaveGame
 {
     public static class Log
     {
-        private static bool _enableLogging = false;
-
         private static string GetLogMessage(object messageOrFormat, object[] args)
         {
             string message = messageOrFormat.ToString();
@@ -22,10 +17,7 @@ namespace BetterLoadSaveGame
 
         public static void Info(object messageOrFormat, params object[] args)
         {
-            if (_enableLogging)
-            {
-                Debug.Log(GetLogMessage(messageOrFormat, args));
-            }
+            Debug.Log(GetLogMessage(messageOrFormat, args));
         }
 
         public static void Error(object messageOrFormat, params object[] args)
