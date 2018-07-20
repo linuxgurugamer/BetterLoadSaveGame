@@ -14,6 +14,7 @@ namespace BetterLoadSaveGame
         private const int THUMB_HEIGHT = 94;
 
         private Dictionary<string, Texture2D> _loadedScreenshots = new Dictionary<string, Texture2D>();
+        private Texture2D _placeholder;
 
         public void Start()
         {
@@ -30,6 +31,8 @@ namespace BetterLoadSaveGame
                         EnqueueAction(() => ResizeScreenshot(fullPath));
                     }
                 }
+
+                _placeholder = GameDatabase.Instance.GetTexture("BetterLoadSaveGame/placeholder", false);
             }
             catch (Exception ex)
             {
@@ -92,7 +95,14 @@ namespace BetterLoadSaveGame
                 _loadedScreenshots.Add(imageFile, screenshot);
             }
 
-            return screenshot;
+            if (screenshot != null)
+            {
+                return screenshot;
+            }
+            else
+            {
+                return _placeholder;
+            }
         }
 
         public void ClearScreenshots()
