@@ -26,13 +26,16 @@ Highly recommend also using a mod like [Dated Quick Saves](http://forum.kerbalsp
 
 ## Current state
 
-This is my first mod and it's a work in progress right now, and I'm planning to add more features before it's done.
+Currently has basic features including screenshots, summary info, sorting and filtering.
 
-For KSP 1.2.2/1.3.x, use v1.3. For KSP 1.4.1, use v1.4.
+I'm keen to make further improvements to it. If you have any ideas for new features or improvements, or if you find any bugs, please let me know!
 
-Please let me know if it's not working with another version, or if you have any other problems with it or suggestions, and I'll look into it.
+In particular I'm not aware of any way to replace the official "Load Game" feature in the game menu, which is why you need to press a key (F7) to open the new dialog. If you have any idea how to fix this, please let me know.
 
 ## Change log
+
+2.0
+ - Major rewrite to improve performance. Now opens and scrolls much faster, and uses less space on disk for screenshots.
 
 1.4
  - Rebuilt for KSP 1.4.1
