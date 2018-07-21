@@ -6,44 +6,30 @@ using System.Text;
 
 namespace BetterLoadSaveGame
 {
-    static class SaveWatcher
+    class SaveWatcher : IDisposable
     {
-        private static FileSystemWatcher _watcher;
-        private static string _saveDir;
+        private FileSystemWatcher _watcher;
 
-        public static void Start()
+        public event FileSystemEventHandler OnSave;
+
+        public SaveWatcher()
         {
-            _saveDir = Path.GetFullPath(Path.Combine(Path.Combine(KSPUtil.ApplicationRootPath, "saves"), HighLogic.SaveFolder));
-            _watcher = new FileSystemWatcher(_saveDir);
+            _watcher = new FileSystemWatcher(Util.SaveDir);
+            _watcher.Created += FileCreated;
             _watcher.EnableRaisingEvents = true;
         }
 
-        public static void Stop()
+        private void FileCreated(object sender, FileSystemEventArgs e)
         {
-            if (_watcher != null)
+            if (OnSave != null)
             {
-                _watcher.Dispose();
-                _watcher = null;
+                OnSave(sender, e);
             }
         }
 
-        public static string SaveDir
+        public void Dispose()
         {
-            get { return _saveDir; }
-        }
-
-        public static event FileSystemEventHandler OnSave
-        {
-            add
-            {
-                _watcher.Changed += value;
-                _watcher.Created += value;
-            }
-            remove
-            {
-                _watcher.Changed -= value;
-                _watcher.Created -= value;
-            }
+            _watcher.Dispose();
         }
     }
 }

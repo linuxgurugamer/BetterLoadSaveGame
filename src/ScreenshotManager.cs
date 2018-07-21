@@ -13,16 +13,16 @@ namespace BetterLoadSaveGame
         private const int THUMB_WIDTH = 150;
         private const int THUMB_HEIGHT = 94;
 
-        public void Start()
+        public ScreenshotManager(SaveWatcher saveWatcher)
         {
             try
             {
-                SaveWatcher.OnSave += OnSave;
+                saveWatcher.OnSave += OnSave;
 
                 // Migrate old full screenshots to thumbnails
-                foreach (var file in Directory.GetFiles(SaveWatcher.SaveDir, "*.*"))
+                foreach (var file in Directory.GetFiles(Util.SaveDir, "*.*"))
                 {
-                    var fullPath = Path.Combine(SaveWatcher.SaveDir, file);
+                    var fullPath = Path.Combine(Util.SaveDir, file);
                     if (IsFullScreenshot(fullPath))
                     {
                         EnqueueAction(() => ResizeScreenshot(fullPath));

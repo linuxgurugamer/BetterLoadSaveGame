@@ -6,17 +6,18 @@ namespace BetterLoadSaveGame
     [KSPAddon(KSPAddon.Startup.FlightAndKSC, false)]
     public class Main : MonoBehaviour
     {
-        private ScreenshotManager _screenshotManager = new ScreenshotManager();
-        private SaveGameCollection _saveGameCollection = new SaveGameCollection();
+        private SaveWatcher _saveWatcher;
+        private ScreenshotManager _screenshotManager;
+        private SaveGameCollection _saveGameCollection;
         private LoadGameDialog _loadGameDialog;
 
         public void Start()
         {
             try
             {
-                SaveWatcher.Start();
-                _screenshotManager.Start();
-                _saveGameCollection.Start();
+                _saveWatcher = new SaveWatcher();
+                _screenshotManager = new ScreenshotManager(_saveWatcher);
+                _saveGameCollection = new SaveGameCollection(_saveWatcher);
 
                 _loadGameDialog = new LoadGameDialog(_saveGameCollection, GetInstanceID());
             }
@@ -53,7 +54,10 @@ namespace BetterLoadSaveGame
 
         public void OnDisable()
         {
-            SaveWatcher.Stop();
+            if (_saveWatcher != null)
+            {
+                _saveWatcher.Dispose();
+            }
         }
     }
 }

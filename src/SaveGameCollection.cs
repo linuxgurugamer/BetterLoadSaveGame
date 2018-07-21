@@ -18,15 +18,15 @@ namespace BetterLoadSaveGame
         private List<SaveGameInfo> _saves = new List<SaveGameInfo>();
         private SortModeEnum _sortMode = SortModeEnum.FileTime;
 
-        public void Start()
+        public SaveGameCollection(SaveWatcher saveWatcher)
         {
-            SaveWatcher.OnSave += OnSave;
+            saveWatcher.OnSave += OnSave;
 
-            foreach(var file in Directory.GetFiles(SaveWatcher.SaveDir))
+            foreach(var file in Directory.GetFiles(Util.SaveDir))
             {
                 if (file.EndsWith(".sfs"))
                 {
-                    var fullPath = Path.Combine(SaveWatcher.SaveDir, file);
+                    var fullPath = Path.Combine(Util.SaveDir, file);
                     _saves.Add(new SaveGameInfo(file));
                 }
             }
