@@ -14,7 +14,9 @@ Looks like this:
 
 ## Installation
 
-Copy the contents of the `GameData` folder into the `GameData` folder inside your KSP install.
+Available for install via CKAN.
+
+Alternatively, download the latest release and extract the contents of the GameData folder into the GameData folder inside your KSP install.
 
 ## Usage
 
