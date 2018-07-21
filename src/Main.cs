@@ -16,10 +16,11 @@ namespace BetterLoadSaveGame
             try
             {
                 _saveWatcher = new SaveWatcher();
+
                 _screenshotManager = new ScreenshotManager(_saveWatcher);
                 _saveGameCollection = new SaveGameCollection(_saveWatcher);
 
-                _loadGameDialog = new LoadGameDialog(_saveGameCollection, GetInstanceID());
+                _loadGameDialog = new LoadGameDialog(_saveGameCollection, _screenshotManager, GetInstanceID());
             }
             catch (Exception ex)
             {

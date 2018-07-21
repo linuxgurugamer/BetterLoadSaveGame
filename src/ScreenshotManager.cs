@@ -13,6 +13,9 @@ namespace BetterLoadSaveGame
         private const int THUMB_WIDTH = 150;
         private const int THUMB_HEIGHT = 94;
 
+        private Dictionary<string, Texture2D> _loadedScreenshots = new Dictionary<string, Texture2D>();
+        private Texture2D _placeholder;
+
         public ScreenshotManager(SaveWatcher saveWatcher)
         {
             try
@@ -28,6 +31,8 @@ namespace BetterLoadSaveGame
                         EnqueueAction(() => ResizeScreenshot(fullPath));
                     }
                 }
+
+                _placeholder = GameDatabase.Instance.GetTexture("BetterLoadSaveGame/placeholder", false);
             }
             catch (Exception ex)
             {
@@ -37,6 +42,8 @@ namespace BetterLoadSaveGame
 
         private void OnSave(object sender, FileSystemEventArgs e)
         {
+            Log.Info("Detected file changed: " + e.FullPath);
+
             if (e.FullPath.EndsWith(".sfs"))
             {
                 EnqueueAction(() => SaveScreenshot(Path.ChangeExtension(e.FullPath, ".png")));
@@ -73,6 +80,36 @@ namespace BetterLoadSaveGame
             File.WriteAllBytes(outFile, bytes);
 
             File.Delete(filename);
+        }
+
+        public Texture2D GetScreenshot(SaveGameInfo save)
+        {
+            Texture2D screenshot = null;
+
+            var imageFile = save.SaveFile.FullName.Replace(".sfs", "-thumb.png");
+
+            if (!_loadedScreenshots.TryGetValue(imageFile, out screenshot) && File.Exists(imageFile))
+            {
+                Log.Info("Loading screenshot: " + imageFile);
+                var data = File.ReadAllBytes(imageFile);
+                screenshot = new Texture2D(2, 2);
+                screenshot.LoadImage(data);
+                _loadedScreenshots.Add(imageFile, screenshot);
+            }
+
+            if (screenshot != null)
+            {
+                return screenshot;
+            }
+            else
+            {
+                return _placeholder;
+            }
+        }
+
+        public void ClearScreenshots()
+        {
+            _loadedScreenshots.Clear();
         }
     }
 }

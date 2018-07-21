@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BetterLoadSaveGame
 {
-    class LoadGameDialog
+    class LoadGameDialog : ActionGenerator
     {
         private const int WIDTH = 500;
         private const int HEIGHT = 600;
@@ -14,24 +14,32 @@ namespace BetterLoadSaveGame
         private string _filterText = "";
         private Vector2 _scrollPos;
         private SaveGameCollection _saveGameCollection;
+        private ScreenshotManager _screenshotManager;
         private int _instanceID;
 
-        public LoadGameDialog(SaveGameCollection saveGameCollection, int instanceID)
+        public LoadGameDialog(SaveGameCollection saveGameCollection, ScreenshotManager screenshotManager, int instanceID)
         {
             _saveGameCollection = saveGameCollection;
+            _screenshotManager = screenshotManager;
             _instanceID = instanceID;
 
             _windowRect = new Rect((Screen.width - WIDTH) / 2, (Screen.height - HEIGHT) / 2, WIDTH, HEIGHT);
         }
 
-        public void Update()
+        public override void Update()
         {
+            base.Update();
+
             if (Input.GetKeyDown(KeyCode.F7))
             {
                 if (!_toggleVisibility)
                 {
                     _toggleVisibility = true;
                     Visible = !Visible;
+                    if (!Visible)
+                    {
+                        _screenshotManager.ClearScreenshots();
+                    }
                 }
             }
             else if (_toggleVisibility)
@@ -65,6 +73,10 @@ namespace BetterLoadSaveGame
             int saveIndex = 0;
             foreach (var save in _saveGameCollection.Saves)
             {
+                // Determine if the button is visible.
+                // This is not very accurate...
+                bool isVisible = (saveIndex * 100 - _scrollPos.y) < HEIGHT;
+
                 var name = Path.GetFileNameWithoutExtension(save.SaveFile.Name);
 
                 if (_filterText == "" || name.Contains(_filterText))
@@ -72,9 +84,19 @@ namespace BetterLoadSaveGame
                     var content = new GUIContent();
                     content.text = save.ButtonText;
 
+                    if (isVisible)
+                    {
+                        content.image = _screenshotManager.GetScreenshot(save);
+                    }
+
                     if (GUILayout.Button(content, gameButtonStyle))
                     {
                         Log.Info("Clicked save: {0}", save.SaveFile.Name);
+                        EnqueueAction(() =>
+                        {
+                            Visible = false;
+                            LoadSaveGame(save);
+                        });
                     }
                     saveIndex++;
                 }
@@ -126,6 +148,14 @@ namespace BetterLoadSaveGame
                 Log.Info("Changing visibility to: {0}", _visible);
                 FlightDriver.SetPause(_visible);
             }
+        }
+
+        private void LoadSaveGame(SaveGameInfo save)
+        {
+            Log.Info("Loading save: {0}", save.SaveFile.Name);
+            var name = Path.GetFileNameWithoutExtension(save.SaveFile.Name);
+            var game = GamePersistence.LoadGame(name, HighLogic.SaveFolder, true, false);
+            game.Start();
         }
     }
 }
