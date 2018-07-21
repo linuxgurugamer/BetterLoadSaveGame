@@ -16,6 +16,7 @@ namespace BetterLoadSaveGame
         {
             _watcher = new FileSystemWatcher(Util.SaveDir);
             _watcher.Created += FileCreated;
+            _watcher.Changed += FileCreated;
             _watcher.EnableRaisingEvents = true;
         }
 
