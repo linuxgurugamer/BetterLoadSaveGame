@@ -36,7 +36,11 @@ namespace BetterLoadSaveGame
                 {
                     _toggleVisibility = true;
                     Visible = !Visible;
-                    if (!Visible)
+                    if (Visible)
+                    {
+                        _scrollPos = new Vector2();
+                    }
+                    else
                     {
                         _screenshotManager.ClearScreenshots();
                     }

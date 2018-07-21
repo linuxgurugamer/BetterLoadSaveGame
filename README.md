@@ -34,6 +34,9 @@ In particular I'm not aware of any way to replace the official "Load Game" featu
 
 ## Change log
 
+2.1
+ - Fix scroll position not being reset when showing window
+
 2.0
  - Major rewrite to improve performance. Now opens and scrolls much faster, and uses less space on disk for screenshots.
 
