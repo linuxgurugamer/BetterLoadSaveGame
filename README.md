@@ -36,6 +36,10 @@ In particular I'm not aware of any way to replace the official "Load Game" featu
 
 ## Change log
 
+2.2
+ - Fixed duplicate named saves appearing in the list
+ - Fixed missing screenshots when multiple saves made at the same time
+
 2.1
  - Fix scroll position not being reset when showing window
 
