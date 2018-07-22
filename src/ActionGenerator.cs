@@ -20,24 +20,17 @@ namespace BetterLoadSaveGame
 
         public virtual void Update()
         {
-            Queue<Action> frameQueue;
-
+            Action action = null;
             lock (_lock)
             {
-                frameQueue = _actions;
-                _actions = new Queue<Action>();
+                if (_actions.Count > 0)
+                {
+                    action = _actions.Dequeue();
+                }
             }
-
-            while (frameQueue.Count > 0)
+            if (action != null)
             {
-                try
-                {
-                    frameQueue.Dequeue()();
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex.ToString());
-                }
+                action();
             }
         }
     }
