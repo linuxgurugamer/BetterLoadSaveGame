@@ -4,5 +4,5 @@ copy /Y src\bin\Release\BetterLoadSaveGame.dll GameData\BetterLoadSaveGame
 FOR /F "tokens=* USEBACKQ" %%F IN (`powershell -command "[System.Reflection.Assembly]::LoadFrom('src\bin\Release\BetterLoadSaveGame.dll').GetName().Version.ToString(2)"`) do (
   set ver=%%F
 )
-del BetterLoadSaveGame.zip
+del BetterLoadSaveGame_v*.zip
 "C:\Program Files\7-Zip\7z.exe" a -tzip BetterLoadSaveGame_v%ver%.zip GameData

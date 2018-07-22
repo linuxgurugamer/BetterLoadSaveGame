@@ -56,7 +56,13 @@ namespace BetterLoadSaveGame
         {
             if (e.FullPath.EndsWith(".sfs"))
             {
-                _saves.Add(new SaveGameInfo(e.FullPath));
+                var newSave = new SaveGameInfo(e.FullPath);
+                var existingSave = _saves.Find(r => r.SaveFile.Name == newSave.SaveFile.Name);
+                if (existingSave != null)
+                {
+                    _saves.Remove(existingSave);
+                }
+                _saves.Add(newSave);
                 UpdateSort();
             }
         }
