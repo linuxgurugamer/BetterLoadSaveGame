@@ -32,5 +32,10 @@ namespace BetterLoadSaveGame
         {
             _watcher.Dispose();
         }
+
+        public void Enable(bool enable)
+        {
+            _watcher.EnableRaisingEvents = enable;
+        }
     }
 }

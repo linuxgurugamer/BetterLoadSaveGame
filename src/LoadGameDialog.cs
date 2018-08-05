@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -16,9 +17,11 @@ namespace BetterLoadSaveGame
         private SaveGameCollection _saveGameCollection;
         private ScreenshotManager _screenshotManager;
         private int _instanceID;
+        private SaveWatcher _saveWatcher;
 
-        public LoadGameDialog(SaveGameCollection saveGameCollection, ScreenshotManager screenshotManager, int instanceID)
+        public LoadGameDialog(SaveWatcher saveWatcher, SaveGameCollection saveGameCollection, ScreenshotManager screenshotManager, int instanceID)
         {
+            _saveWatcher = saveWatcher;
             _saveGameCollection = saveGameCollection;
             _screenshotManager = screenshotManager;
             _instanceID = instanceID;
@@ -159,7 +162,41 @@ namespace BetterLoadSaveGame
             Log.Info("Loading save: {0}", save.SaveFile.Name);
             var name = Path.GetFileNameWithoutExtension(save.SaveFile.Name);
             var game = GamePersistence.LoadGame(name, HighLogic.SaveFolder, true, false);
-            game.Start();
+
+            // For some reason, loading games that start at the space center
+            // just loads the latest persistent save instead. Copying the save
+            // files over the persistent save seems to fix the problem.
+            // Interestingly from my testing, this is similar to what the stock
+            // load game dialog does as well, which updates the persistent save
+            // when loading a game that starts in the space center, but not one
+            // that starts in flight. I'm sure there's a better way to solve this
+            // but this will do until I find it.
+            if (name != "persistent" && game != null && game.startScene == GameScenes.SPACECENTER)
+            {
+                _saveWatcher.Enable(false);
+
+                CopySaveFile(name + ".sfs", "persistent.sfs");
+                CopySaveFile(name + ".loadmeta", "persistent.loadmeta");
+                CopySaveFile(name + "-thumb.png", "persistent-thumb.png");
+
+                _saveWatcher.Enable(true);
+            }
+
+            if (game != null)
+            {
+                game.Start();
+            }
+        }
+
+        private void CopySaveFile(string from, string to)
+        {
+            var sourceFile = Path.Combine(Util.SaveDir, from);
+            if (File.Exists(sourceFile))
+            {
+                var destFile = Path.Combine(Util.SaveDir, to);
+                File.Copy(sourceFile, destFile, overwrite: true);
+                File.SetLastWriteTime(destFile, DateTime.Now);
+            }
         }
     }
 }

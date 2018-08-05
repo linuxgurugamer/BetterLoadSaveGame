@@ -36,6 +36,9 @@ In particular I'm not aware of any way to replace the official "Load Game" featu
 
 ## Change log
 
+2.3
+ - Fixed a bug where loading games that were saved at the space center would just load the "persistent" save instead.
+
 2.2
  - Fixed duplicate named saves appearing in the list
  - Fixed missing screenshots when multiple saves made at the same time
