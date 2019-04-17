@@ -56,7 +56,7 @@ namespace BetterLoadSaveGame
 
         private bool IsFullScreenshot(string filename)
         {
-            return filename.EndsWith(".png") && !filename.EndsWith("-thumb.png") && File.Exists(Path.ChangeExtension(filename, ".sfs"));
+            return filename.EndsWith(".png") && !filename.EndsWith("-thumb.png") && File.Exists(filename) && File.Exists(Path.ChangeExtension(filename, ".sfs"));
         }
 
         private void SaveScreenshot(string filename)
