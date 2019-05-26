@@ -39,7 +39,7 @@ In particular I'm not aware of any way to replace the official "Load Game" featu
 ## Change log
 
 2.4
- - Rebuilt for KSP 1.7.0
+ - Rebuilt for KSP 1.7 (also tested working with 1.4, 1.5, 1.6)
  - Improved error checking when resizing screenshots (thanks linuxgurugamer)
 
 2.3
