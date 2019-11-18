@@ -22,6 +22,8 @@ Alternatively, download the latest release and extract the contents of the GameD
 
 Press F7 in game to toggle the window on/off, and click on the buttons to load games.
 
+Note for best screenshot quality, ensure "Texture Quality" is set to "Full Res" in your game options (under "Graphics").
+
 ## Recommended mods
 
 Highly recommend also using a mod like [Dated Quick Saves](http://forum.kerbalspaceprogram.com/index.php?/topic/97033-13122-magico13s-modlets-sensible-screenshot-dated-quicksaves-etc/) or [Kerbal Improved Save System](http://forum.kerbalspaceprogram.com/index.php?/topic/138001-130-kiss-kerbal-improved-save-system/) to address my other favourite problem in the game of only having one quicksave slot when you press F5.
@@ -35,6 +37,10 @@ I'm keen to make further improvements to it. If you have any ideas for new featu
 In particular I'm not aware of any way to replace the official "Load Game" feature in the game menu, which is why you need to press a key (F7) to open the new dialog. If you have any idea how to fix this, please let me know.
 
 ## Change log
+
+2.4
+ - Rebuilt for KSP 1.7 (also tested working with 1.4, 1.5, 1.6)
+ - Improved error checking when resizing screenshots (thanks linuxgurugamer)
 
 2.3
  - Fixed a bug where loading games that were saved at the space center would just load the "persistent" save instead.
