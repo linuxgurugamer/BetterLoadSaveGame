@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using System.Diagnostics;
 
 namespace BetterLoadSaveGame
 {
@@ -15,19 +16,20 @@ namespace BetterLoadSaveGame
             return String.Format("[BetterLoadSaveGame] {0}", message);
         }
 
+        [ConditionalAttribute("DEBUG")]
         public static void Info(object messageOrFormat, params object[] args)
         {
-            Debug.Log(GetLogMessage(messageOrFormat, args));
+            UnityEngine.Debug.Log(GetLogMessage(messageOrFormat, args));
         }
 
         public static void Error(object messageOrFormat, params object[] args)
         {
-            Debug.LogError(GetLogMessage(messageOrFormat, args));
+            UnityEngine.Debug.LogError(GetLogMessage(messageOrFormat, args));
         }
 
         public static void Warn(object messageOrFormat, params object[] args)
         {
-            Debug.LogWarning(GetLogMessage(messageOrFormat, args));
+            UnityEngine.Debug.LogWarning(GetLogMessage(messageOrFormat, args));
         }
     }
 }

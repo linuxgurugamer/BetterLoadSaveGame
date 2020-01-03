@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 
 namespace BetterLoadSaveGame
 {
@@ -8,11 +9,13 @@ namespace BetterLoadSaveGame
     {
         public FileInfo SaveFile { get; private set; }
         public Dictionary<string, string> MetaData { get; private set; }
+        public GUIContent buttonContent;
 
         public SaveGameInfo(string saveFile)
         {
             SaveFile = new FileInfo(saveFile);
             MetaData = new Dictionary<string, string>();
+            buttonContent = null;
 
             var metaFile = Path.ChangeExtension(saveFile, "loadmeta");
 
@@ -27,29 +30,34 @@ namespace BetterLoadSaveGame
                     MetaData[key] = value;
                 }
             }
-
-            string funds = "";
-            if (MetaData.TryGetValue("funds", out funds))
+                 string funds = "";
+           if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
             {
-                double fundsAmount;
-                if (double.TryParse(funds, out fundsAmount))
+                if (MetaData.TryGetValue("funds", out funds))
                 {
-                    fundsAmount /= 1000.0;
-                    string suffix = "k";
-                    if (fundsAmount > 1000)
+                    double fundsAmount;
+                    if (double.TryParse(funds, out fundsAmount))
                     {
-                        fundsAmount /= 1000.0;
-                        suffix = "m";
+                        string suffix = "";
+                        if (fundsAmount >= 1000)
+                        {
+                            fundsAmount /= 1000.0;
+                            suffix = "k";
+                        }
+                        if (fundsAmount > 1000)
+                        {
+                            fundsAmount /= 1000.0;
+                            suffix = "m";
+                        }
+                        if (fundsAmount > 1000)
+                        {
+                            fundsAmount /= 1000.0;
+                            suffix = "b";
+                        }
+                        funds = Math.Round(fundsAmount, 1).ToString() + suffix + " funds";
                     }
-                    if (fundsAmount > 1000)
-                    {
-                        fundsAmount /= 1000.0;
-                        suffix = "b";
-                    }
-                    funds = Math.Round(fundsAmount, 1).ToString() + suffix + " funds";
                 }
             }
-
             string gameTime = "";
             if (MetaData.TryGetValue("UT", out gameTime))
             {

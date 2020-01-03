@@ -22,10 +22,7 @@ namespace BetterLoadSaveGame
 
         private void FileCreated(object sender, FileSystemEventArgs e)
         {
-            if (OnSave != null)
-            {
-                OnSave(sender, e);
-            }
+            OnSave(sender, e);
         }
 
         public void Dispose()

@@ -3,7 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterLoadSaveGame", "BetterLoadSaveGame.csproj", "{B151F0BD-A3C5-4FB4-B723-AC363C9D03AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterLoadSaveGame", "BetterLoadSaveGame\BetterLoadSaveGame.csproj", "{B151F0BD-A3C5-4FB4-B723-AC363C9D03AB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A5F4EAF6-25C4-43B0-B037-1D9D69A74768}"
+	ProjectSection(SolutionItems) = preProject
+		BetterLoadSaveGame.version = BetterLoadSaveGame.version
+		buildRelease.bat = buildRelease.bat
+		ChangeLog.txt = ChangeLog.txt
+		deploy.bat = deploy.bat
+		jenkins.txt = jenkins.txt
+		LICENSE.txt = LICENSE.txt
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

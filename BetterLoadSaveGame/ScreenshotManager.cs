@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using ToolbarControl_NS;
 
 namespace BetterLoadSaveGame
 {
@@ -13,11 +14,12 @@ namespace BetterLoadSaveGame
         private const int THUMB_WIDTH = 150;
         private const int THUMB_HEIGHT = 94;
 
-        private Dictionary<string, Texture2D> _loadedScreenshots = new Dictionary<string, Texture2D>();
+        private Dictionary<string, Texture2D> _loadedScreenshots; // = new Dictionary<string, Texture2D>();
         private Texture2D _placeholder;
 
         public ScreenshotManager(SaveWatcher saveWatcher)
         {
+            _loadedScreenshots = new Dictionary<string, Texture2D>();
             try
             {
                 saveWatcher.OnSave += OnSave;
@@ -32,7 +34,9 @@ namespace BetterLoadSaveGame
                     }
                 }
 
-                _placeholder = GameDatabase.Instance.GetTexture("BetterLoadSaveGame/placeholder", false);
+                //_placeholder = GameDatabase.Instance.GetTexture("BetterLoadSaveGame/placeholder", false);
+                _placeholder = new Texture2D(2, 2);
+                ToolbarControl.LoadImageFromFile(ref _placeholder, "BetterLoadSaveGame/PluginData/placeholder");
             }
             catch (Exception ex)
             {

@@ -6,6 +6,7 @@ namespace BetterLoadSaveGame
     [KSPAddon(KSPAddon.Startup.FlightAndKSC, false)]
     public class Main : MonoBehaviour
     {
+        static public Main fetch;
         private SaveWatcher _saveWatcher;
         private ScreenshotManager _screenshotManager;
         private SaveGameCollection _saveGameCollection;
@@ -15,6 +16,7 @@ namespace BetterLoadSaveGame
         {
             try
             {
+                fetch = this;
                 _saveWatcher = new SaveWatcher();
 
                 _screenshotManager = new ScreenshotManager(_saveWatcher);
@@ -59,6 +61,13 @@ namespace BetterLoadSaveGame
             {
                 _saveWatcher.Dispose();
             }
+        }
+
+        public bool Visible {  get { return _loadGameDialog.Visible; } }
+        public bool EnableDialog()
+        {
+            _loadGameDialog.Visible = !_loadGameDialog.Visible;
+            return _loadGameDialog.Visible;
         }
     }
 }

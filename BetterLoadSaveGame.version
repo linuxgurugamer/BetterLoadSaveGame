@@ -1,0 +1,22 @@
+{
+  "NAME": "BetterLoadSaveGame",
+  "URL": "http://ksp.spacetux.net/avc/BetterLoadSaveGame",
+  "DOWNLOAD": "https://github.com/linuxgurugamer/BetterLoadSaveGame/releases",
+  "CHANGELOG": "https://raw.githubusercontent.com/linuxgurugamer/BetterLoadSaveGame/master/Changelog.txt",
+  "GITHUB": {
+    "USERNAME": "linuxgurugamer",
+    "REPOSITORY": "BetterLoadSaveGame",
+    "ALLOW_PRE_RELEASE": false
+  },
+  "VERSION": {
+    "MAJOR": 2,
+    "MINOR": 5,
+    "PATCH": 0,
+    "BUILD": 0
+  },
+  "KSP_VERSION_MIN": {
+    "MAJOR": 1,
+    "MINOR": 8,
+    "PATCH": 0
+  }
+}

@@ -15,7 +15,7 @@ namespace BetterLoadSaveGame
 
     class SaveGameCollection
     {
-        private List<SaveGameInfo> _saves = new List<SaveGameInfo>();
+        internal List<SaveGameInfo> _saves = new List<SaveGameInfo>();
         private SortModeEnum _sortMode = SortModeEnum.FileTime;
 
         public SaveGameCollection(SaveWatcher saveWatcher)
