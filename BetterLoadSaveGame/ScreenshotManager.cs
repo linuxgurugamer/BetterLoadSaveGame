@@ -72,7 +72,8 @@ namespace BetterLoadSaveGame
         private void ResizeScreenshot(string filename)
         {
             Log.Info("Resizing screenshot: " + filename);
-
+            if (!File.Exists(filename))
+                return;
             var fileData = File.ReadAllBytes(filename);
             var tex = new Texture2D(2, 2);
             tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
