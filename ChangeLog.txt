@@ -1,5 +1,9 @@
 ChangeLog
 
+2.5.0.1
+	Fixed loading and saving of save game
+	Note.  Hitting F9 when no save game exists will then force a reload when an F5 is pressed
+
 2.5
 	Adoption by Linuxgurugamer
 	Updated for KSP 1.8

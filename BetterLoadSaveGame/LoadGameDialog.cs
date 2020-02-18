@@ -198,6 +198,16 @@ namespace BetterLoadSaveGame
                     GUI.DragWindow();
                 }, "Load Game", GUI.skin.window);
             }
+            if (lastButtonclicked != "" && !_visibleLoadScreen)
+            {
+                // Do load here
+                //Visible = false;
+                EnqueueAction(() =>
+                {
+                    Visible = false;
+                    LoadSaveGame(selectedSave);
+                });
+            }
             if (_visibleDeleteDialog)
             {
                 GUI.skin = HighLogic.Skin;
@@ -206,8 +216,9 @@ namespace BetterLoadSaveGame
                     GUILayout.Label("Are you sure you want to delete this game?\nYou will lose all progress and ships in it.");
                     if (GUILayout.Button("Delete Game"))
                     {
-                        DeleteSaveGame();
+                        DeleteSaveGame(selectedSave);
                         _visibleDeleteDialog = false;
+                        Visible = false;
                     }
                     if (GUILayout.Button("Cancel"))
                     {
@@ -220,6 +231,7 @@ namespace BetterLoadSaveGame
 
         bool clicked = false;
         string lastButtonclicked = "";
+        SaveGameInfo selectedSave;
 
         private void RenderGameList()
         {
@@ -275,6 +287,7 @@ namespace BetterLoadSaveGame
                             {
                                 lastButtonclicked = name;
                                 clicked = true;
+                                selectedSave = save;
                             }
                         }
                     }
@@ -385,16 +398,18 @@ namespace BetterLoadSaveGame
             }
         }
 
-        private void DeleteSaveGame()
+        private void DeleteSaveGame(SaveGameInfo sgi)
         {
-            DeleteFile(".sfs");
-            DeleteFile(".loadmeta");
-            DeleteFile("-thumb.png");
+            var name = Path.GetFileNameWithoutExtension(sgi.SaveFile.Name);
+            var game = GamePersistence.LoadGame(name, HighLogic.SaveFolder, true, false);
+
+            DeleteFile(HighLogic.SaveFolder + "/" + name + ".sfs");
+            DeleteFile(HighLogic.SaveFolder + "/" + name + ".loadmeta");
+            DeleteFile(HighLogic.SaveFolder + "/" + name + "-thumb.png");
         }
         void DeleteFile(string str)
         {
-            string text = KSPUtil.ApplicationRootPath + "saves/" + HighLogic.CurrentGame.Title + "/" + lastButtonclicked + str;
-            File.Delete(text);
+            File.Delete(KSPUtil.ApplicationRootPath + "saves/" + str);
         }
     }
 }
