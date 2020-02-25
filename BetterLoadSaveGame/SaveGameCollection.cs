@@ -21,8 +21,13 @@ namespace BetterLoadSaveGame
         public SaveGameCollection(SaveWatcher saveWatcher)
         {
             saveWatcher.OnSave += OnSave;
+            LoadAllGames();
+        }
 
-            foreach(var file in Directory.GetFiles(Util.SaveDir))
+        public void LoadAllGames()
+        {
+            _saves.Clear();
+            foreach (var file in Directory.GetFiles(Util.SaveDir))
             {
                 if (file.EndsWith(".sfs"))
                 {
@@ -32,8 +37,8 @@ namespace BetterLoadSaveGame
             }
 
             UpdateSort();
-        }
 
+        }
         public SortModeEnum SortMode
         {
             get

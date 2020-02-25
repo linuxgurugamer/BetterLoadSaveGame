@@ -72,20 +72,20 @@ namespace BetterLoadSaveGame
             _instanceID = instanceID;
 
             _windowRect = new Rect((Screen.width - WIDTH) / 2, (Screen.height - HEIGHT) / 2, WIDTH, HEIGHT);
+            _deleteRect = new Rect((Screen.width - DELWIDTH) / 2, (Screen.height - DELHEIGHT) / 2, DELWIDTH, DELHEIGHT);
         }
 
         public override void Update()
         {
             if (_toggleVisibility && (Input.GetKeyUp(KeyCode.Pause) || Input.GetKeyUp(KeyCode.Escape)))
             {
-                _visibleLoadScreen = false;
+                Visible = false;
             }
             base.Update();
 
             if (HighLogic.CurrentGame.Parameters.CustomParams<BLSG>().replaceStock && 
                 InputLockManager.IsUnlocked(ControlTypes.QUICKLOAD) && GameSettings.QUICKLOAD.GetKeyDown(false))
             {
-
                 GameObject obj = new GameObject();
                 var move = obj.AddComponent<CloseLoadGameDialog>();
                 move.CloseIt();
@@ -133,28 +133,36 @@ namespace BetterLoadSaveGame
             }
             return newCol;
         }
+
+
         bool firstTime = true;
         GUIStyle gameButtonStyle = null;
-
+        GUIStyle buttonStyleYellow;
+        GUIStyle buttonStyleOrange;
         public void OnGUI()
         {
             if (!HighLogic.CurrentGame.Parameters.CustomParams<BLSG>().useAlternateSkin)
                 GUI.skin = HighLogic.Skin;
+
             if (firstTime)
             {
                 gameButtonStyle = new GUIStyle(GUI.skin.button);
                 gameButtonStyle.alignment = TextAnchor.MiddleLeft;
+                buttonStyleYellow = new GUIStyle(GUI.skin.button);
+                buttonStyleYellow.normal.textColor = Color.yellow;
+                buttonStyleOrange = new GUIStyle(GUI.skin.button);
+                buttonStyleOrange.normal.textColor = HtmlToColor("#fdb915");
 
                 firstTime = false;
             }
-            if (_visibleLoadScreen)
+
+            if (Visible)
             {
-                GUIStyle buttonStyleYellow = new GUIStyle(GUI.skin.button);
-                buttonStyleYellow.normal.textColor = Color.yellow;
-                GUIStyle buttonStyleOrange = new GUIStyle(GUI.skin.button);
-                buttonStyleOrange.normal.textColor = HtmlToColor("#fdb915");
+
                 _windowRect = ClickThruBlocker.GUILayoutWindow(_instanceID, _windowRect, (windowID) =>
                 {
+                    GUI.enabled = !_visibleDeleteDialog;
+
                     GUILayout.BeginVertical();
                     RenderSortButtonsPanel();
                     RenderFilterPanel();
@@ -168,15 +176,13 @@ namespace BetterLoadSaveGame
                     if (GUILayout.Button("Delete", buttonStyleOrange, GUILayout.Width(90), GUILayout.Height(30)))
                     {
                         _visibleDeleteDialog = true;
-
-                        _deleteRect = new Rect((Screen.width - DELWIDTH) / 2, (Screen.height - DELHEIGHT) / 2, DELWIDTH, DELHEIGHT);
                     }
-                    GUI.enabled = true;
+                    GUI.enabled = !_visibleDeleteDialog;
 
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("Cancel", GUI.skin.button, GUILayout.Width(90), GUILayout.Height(30)))
                     {
-                        _visibleLoadScreen = false;
+                        Visible = false;
 #if false
                         if (openedViaF9)
                         {
@@ -187,18 +193,19 @@ namespace BetterLoadSaveGame
                             FlightDriver.SetPause(false, false);
                     }
 
-                    if (lastButtonclicked == "")
+                    if (lastButtonclicked == "" || _visibleDeleteDialog)
                         GUI.enabled = false;
                     if (GUILayout.Button("Load", buttonStyleYellow, GUILayout.Width(90), GUILayout.Height(30)))
-                        _visibleLoadScreen = false;
+                        Visible = false;
                     GUI.enabled = true;
 
                     GUILayout.EndHorizontal();
                     GUILayout.EndVertical();
                     GUI.DragWindow();
                 }, "Load Game", GUI.skin.window);
+
             }
-            if (lastButtonclicked != "" && !_visibleLoadScreen)
+            if (lastButtonclicked != "" && !Visible)
             {
                 // Do load here
                 //Visible = false;
@@ -210,15 +217,16 @@ namespace BetterLoadSaveGame
             }
             if (_visibleDeleteDialog)
             {
-                GUI.skin = HighLogic.Skin;
-                _deleteRect = ClickThruBlocker.GUILayoutWindow(_instanceID, _deleteRect, (winId) =>
+
+                _deleteRect = ClickThruBlocker.GUILayoutWindow(_instanceID + 1, _deleteRect, (winId) =>
                 {
-                    GUILayout.Label("Are you sure you want to delete this game?\nYou will lose all progress and ships in it.");
-                    if (GUILayout.Button("Delete Game"))
+                    GUILayout.Label("Are you sure you want to delete this save?\nYou will lose all progress and ships in it.");
+                    if (GUILayout.Button("Delete Save"))
                     {
                         DeleteSaveGame(selectedSave);
                         _visibleDeleteDialog = false;
-                        Visible = false;
+                       // Visible = false;
+                        lastButtonclicked = "";
                     }
                     if (GUILayout.Button("Cancel"))
                     {
@@ -226,6 +234,7 @@ namespace BetterLoadSaveGame
                     }
                     GUI.DragWindow();
                 }, "Confirmation Needed", GUI.skin.window);
+
             }
         }
 
@@ -406,6 +415,7 @@ namespace BetterLoadSaveGame
             DeleteFile(HighLogic.SaveFolder + "/" + name + ".sfs");
             DeleteFile(HighLogic.SaveFolder + "/" + name + ".loadmeta");
             DeleteFile(HighLogic.SaveFolder + "/" + name + "-thumb.png");
+            Main.fetch.RefreshSaves();
         }
         void DeleteFile(string str)
         {

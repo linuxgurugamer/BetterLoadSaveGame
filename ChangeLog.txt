@@ -1,5 +1,12 @@
 ChangeLog
 
+2.5.1
+	Fixed same window id being used on dialog and delete
+	Fixed deletion process 
+	Added refresh of saves after deletion
+	Changed delete to not close main dialog, but to disable while delete dialog is up
+	Fixed delete dialog to use selected skin
+
 2.5.0.2
 	Added check for screenshot file before making thumbnail
 

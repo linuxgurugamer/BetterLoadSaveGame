@@ -30,6 +30,10 @@ namespace BetterLoadSaveGame
             }
         }
 
+        public void RefreshSaves()
+        {
+            _saveGameCollection.LoadAllGames();
+        }
         public void Update()
         {
             try
