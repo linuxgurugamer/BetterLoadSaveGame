@@ -40,8 +40,8 @@ namespace BetterLoadSaveGame
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
     internal class InstallChecker : MonoBehaviour
     {
-    private const string MODNAME = "Better Load Save Game";
-    private const string FOLDERNAME = "BetterLoadSaveGame";
+        private const string MODNAME = "Better Load Save Game";
+        private const string FOLDERNAME = "BetterLoadSaveGame";
         private const string EXPECTEDPATH = FOLDERNAME + "/Plugins";
 
         protected void Start()
@@ -90,7 +90,7 @@ namespace BetterLoadSaveGame
             catch (Exception ex)
             {
                 Debug.LogError("-ERROR- " + this.GetType().FullName + "[" + this.GetInstanceID().ToString("X") + "][" + Time.time.ToString("0.00") + "]: " +
-                   "Exception caught while cleaning up old files.\n" + ex.Message + "\n" + ex.StackTrace );
+                   "Exception caught while cleaning up old files.\n" + ex.Message + "\n" + ex.StackTrace);
 
             }
         }

@@ -68,7 +68,7 @@ namespace BetterLoadSaveGame
             }
         }
 
-        public bool Visible {  get { return _loadGameDialog.Visible; } }
+        public bool Visible { get { return _loadGameDialog.Visible; } }
         public bool EnableDialog()
         {
             _loadGameDialog.Visible = !_loadGameDialog.Visible;

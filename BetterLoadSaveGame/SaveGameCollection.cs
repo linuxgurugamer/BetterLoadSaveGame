@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
+using UnityEngine;
 
 namespace BetterLoadSaveGame
 {
@@ -35,7 +33,6 @@ namespace BetterLoadSaveGame
                     _saves.Add(new SaveGameInfo(file));
                 }
             }
-
             UpdateSort();
 
         }
@@ -57,8 +54,19 @@ namespace BetterLoadSaveGame
             get { return _saves; }
         }
 
+        double lastTimeSaved = 0;
+
         private void OnSave(object sender, System.IO.FileSystemEventArgs e)
         {
+            //
+            // The following is because of behaviour on OSX 
+            // That sends multiple OnSave messages for a single save
+            //
+
+            if (Time.realtimeSinceStartup - lastTimeSaved < 15)
+                return;
+            lastTimeSaved = Time.realtimeSinceStartup;
+
             if (e.FullPath.EndsWith(".sfs"))
             {
                 var newSave = new SaveGameInfo(e.FullPath);

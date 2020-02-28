@@ -1,10 +1,9 @@
-﻿using System;
+﻿using ClickThroughFix;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using ClickThroughFix;
-using System.Linq;
 
 
 
@@ -271,6 +270,7 @@ namespace BetterLoadSaveGame
 
                 if (_filterText == "" || name.Contains(_filterText) || (save.ButtonText != null && save.ButtonText.Contains(_filterText)))
                 {
+
                     if (save.buttonContent == null)
                     {
                         save.buttonContent = new GUIContent();

@@ -1,5 +1,8 @@
 ChangeLog
 
+2.5.1.2
+	Fixed the other OnSave reference, with the same solution as the previous fix
+
 2.5.1.1
 	Fixed 2nd F9, meant to close window, doing a reload of the quicksave
 	Added code to not do screenshot save if less than 15 seconds since the previous one.  This needed because the OnSave on OSX was generating large number of OnSave events for a single save

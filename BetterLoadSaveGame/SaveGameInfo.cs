@@ -22,7 +22,7 @@ namespace BetterLoadSaveGame
             if (File.Exists(metaFile))
             {
                 var content = File.ReadAllLines(metaFile);
-                foreach(var line in content)
+                foreach (var line in content)
                 {
                     var idx = line.IndexOf("=");
                     var key = line.Substring(0, idx).Trim();
@@ -30,8 +30,8 @@ namespace BetterLoadSaveGame
                     MetaData[key] = value;
                 }
             }
-                 string funds = "";
-           if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
+            string funds = "";
+            if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
             {
                 if (MetaData.TryGetValue("funds", out funds))
                 {
