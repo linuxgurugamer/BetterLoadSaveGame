@@ -64,6 +64,7 @@
     <Compile Include="SaveWatcher.cs" />
     <Compile Include="ScreenshotManager.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="SimpleLogger.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>

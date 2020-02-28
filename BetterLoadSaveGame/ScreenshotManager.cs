@@ -23,7 +23,6 @@ namespace BetterLoadSaveGame
             try
             {
                 saveWatcher.OnSave += OnSave;
-
                 // Migrate old full screenshots to thumbnails
                 foreach (var file in Directory.GetFiles(Util.SaveDir, "*.*"))
                 {
@@ -44,9 +43,24 @@ namespace BetterLoadSaveGame
             }
         }
 
+        //
+        // The following is because of behaviour on OSX 
+        // That sends multiple OnSave messages for a single save
+        //
+        double lastTimeSaved = 0;
         private void OnSave(object sender, FileSystemEventArgs e)
         {
-            Log.Info("Detected file changed: " + e.FullPath);
+            //
+            // The following is because of behaviour on OSX 
+            // That sends multiple OnSave messages for a single save
+            //
+
+            if (Time.realtimeSinceStartup - lastTimeSaved < 15)
+                return;
+            lastTimeSaved = Time.realtimeSinceStartup;
+
+            //////// End of OSX patch //////////////////////////////////////////
+
 
             if (e.FullPath.EndsWith(".sfs"))
             {
@@ -65,13 +79,11 @@ namespace BetterLoadSaveGame
 
         private void SaveScreenshot(string filename)
         {
-            Log.Info("Saving screenshot: " + filename);
             ScreenCapture.CaptureScreenshot(filename);
         }
 
         private void ResizeScreenshot(string filename)
         {
-            Log.Info("Resizing screenshot: " + filename);
             if (!File.Exists(filename))
                 return;
             var fileData = File.ReadAllBytes(filename);
@@ -95,7 +107,6 @@ namespace BetterLoadSaveGame
 
             if (!_loadedScreenshots.TryGetValue(imageFile, out screenshot) && File.Exists(imageFile))
             {
-                Log.Info("Loading screenshot: " + imageFile);
                 var data = File.ReadAllBytes(imageFile);
                 screenshot = new Texture2D(2, 2);
                 screenshot.LoadImage(data);

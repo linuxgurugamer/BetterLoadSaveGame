@@ -75,32 +75,43 @@ namespace BetterLoadSaveGame
             _deleteRect = new Rect((Screen.width - DELWIDTH) / 2, (Screen.height - DELHEIGHT) / 2, DELWIDTH, DELHEIGHT);
         }
 
-        public override void Update()
+        public override void LateUpdate()
         {
             if (_toggleVisibility && (Input.GetKeyUp(KeyCode.Pause) || Input.GetKeyUp(KeyCode.Escape)))
             {
                 Visible = false;
             }
-            base.Update();
+            base.LateUpdate();
 
-            if (HighLogic.CurrentGame.Parameters.CustomParams<BLSG>().replaceStock && 
-                InputLockManager.IsUnlocked(ControlTypes.QUICKLOAD) && GameSettings.QUICKLOAD.GetKeyDown(false))
+            if (HighLogic.CurrentGame.Parameters.CustomParams<BLSG>().replaceStock)
             {
-                GameObject obj = new GameObject();
-                var move = obj.AddComponent<CloseLoadGameDialog>();
-                move.CloseIt();
-             }
-            
-            if (!HighLogic.CurrentGame.Parameters.CustomParams<BLSG>().replaceStock && Input.GetKeyDown(KeyCode.F7))
-            {
-                ToggleVisibility();
+                bool quickloadKeyDown = GameSettings.QUICKLOAD.GetKeyDown(false);
+                if (InputLockManager.IsUnlocked(ControlTypes.QUICKLOAD) && quickloadKeyDown)
+                {
+                    GameObject obj = new GameObject();
+                    var move = obj.AddComponent<CloseLoadGameDialog>();
+                    move.CloseIt();
+                }
+                else
+                {
+                    if (_toggleVisibility)
+                        _toggleVisibility = false;
+                    if (quickloadKeyDown)
+                        Visible = false;
+                }
             }
-            else if (_toggleVisibility)
+            else
             {
-                _toggleVisibility = false;
-                InputLockManager.RemoveControlLock("gamePause");
+                if (Input.GetKeyDown(KeyCode.F7))
+                {
+                    ToggleVisibility();
+                }
+                else if (_toggleVisibility)
+                {
+                    _toggleVisibility = false;
+                    InputLockManager.RemoveControlLock("gamePause");
+                }
             }
-           
         }
 
         internal void ToggleVisibility(bool F9 = false)
@@ -190,7 +201,7 @@ namespace BetterLoadSaveGame
                         }
                         else
 #endif
-                            FlightDriver.SetPause(false, false);
+                        FlightDriver.SetPause(false, false);
                     }
 
                     if (lastButtonclicked == "" || _visibleDeleteDialog)
@@ -209,6 +220,7 @@ namespace BetterLoadSaveGame
             {
                 // Do load here
                 //Visible = false;
+
                 EnqueueAction(() =>
                 {
                     Visible = false;
@@ -225,7 +237,7 @@ namespace BetterLoadSaveGame
                     {
                         DeleteSaveGame(selectedSave);
                         _visibleDeleteDialog = false;
-                       // Visible = false;
+                        // Visible = false;
                         lastButtonclicked = "";
                     }
                     if (GUILayout.Button("Cancel"))

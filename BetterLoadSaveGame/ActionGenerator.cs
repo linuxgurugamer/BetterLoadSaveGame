@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 namespace BetterLoadSaveGame
 {
     class ActionGenerator
     {
         private object _lock = new object();
         private Queue<Action> _actions = new Queue<Action>();
-
         protected void EnqueueAction(Action action)
         {
             lock (_lock)
@@ -18,7 +19,7 @@ namespace BetterLoadSaveGame
             }
         }
 
-        public virtual void Update()
+        public virtual void LateUpdate()
         {
             Action action = null;
             lock (_lock)

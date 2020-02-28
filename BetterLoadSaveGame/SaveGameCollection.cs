@@ -77,17 +77,14 @@ namespace BetterLoadSaveGame
             switch (_sortMode)
             {
                 case SortModeEnum.FileTime:
-                    Log.Info("Sorting by file time");
                     _saves.Sort((a, b) => b.SaveFile.LastWriteTime.CompareTo(a.SaveFile.LastWriteTime));
                     break;
 
                 case SortModeEnum.GameTime:
-                    Log.Info("Sorting by game time");
                     _saves.Sort((a, b) => b.GameTime.CompareTo(a.GameTime));
                     break;
 
                 case SortModeEnum.Name:
-                    Log.Info("Sorting by file time");
                     _saves.Sort((a, b) => a.SaveFile.Name.CompareTo(b.SaveFile.Name));
                     break;
             }

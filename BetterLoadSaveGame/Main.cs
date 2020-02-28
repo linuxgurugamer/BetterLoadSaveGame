@@ -34,12 +34,13 @@ namespace BetterLoadSaveGame
         {
             _saveGameCollection.LoadAllGames();
         }
-        public void Update()
+
+        public void LateUpdate()
         {
             try
             {
-                _screenshotManager.Update();
-                _loadGameDialog.Update();
+                _screenshotManager.LateUpdate();
+                _loadGameDialog.LateUpdate();
             }
             catch (Exception ex)
             {
