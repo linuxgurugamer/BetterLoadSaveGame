@@ -1,5 +1,12 @@
 ChangeLog
 
+2.5.1.3
+	Added option to hide persistent.sfs file
+	Added option to archive a save
+	Added options to auto-archive or auto-delete old saves
+	Added option to load from archives
+	Wrote new instructions
+
 2.5.1.2
 	Fixed the other OnSave reference, with the same solution as the previous fix
 

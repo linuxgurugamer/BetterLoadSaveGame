@@ -52,11 +52,12 @@ namespace BetterLoadSaveGame
             // The following is because of behaviour on OSX 
             // That sends multiple OnSave messages for a single save
             //
-
-            if (Time.realtimeSinceStartup - lastTimeSaved < 15)
-                return;
-            lastTimeSaved = Time.realtimeSinceStartup;
-
+            if (SystemInfo.operatingSystemFamily != OperatingSystemFamily.Windows)
+            {
+                if (Time.realtimeSinceStartup - lastTimeSaved <2)
+                    return;
+                lastTimeSaved = Time.realtimeSinceStartup;
+            }
             //////// End of OSX patch //////////////////////////////////////////
 
 

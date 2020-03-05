@@ -1,8 +1,26 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+
 using UnityEngine;
 
 namespace BetterLoadSaveGame
 {
+    [KSPAddon(KSPAddon.Startup.AllGameScenes, false)]
+    public class ManageSaves:MonoBehaviour
+    {
+        public void start()
+        {
+            InvokeRepeating("Delay", 60f, 60f);
+        }
+        
+        void Delay()
+        {
+            Log.Info("Calling ManageSaves");
+            ManageOldSaves.ManageSaves();
+        }
+    }
+
     [KSPAddon(KSPAddon.Startup.FlightAndKSC, false)]
     public class Main : MonoBehaviour
     {

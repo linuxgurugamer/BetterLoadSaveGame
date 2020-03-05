@@ -16,21 +16,28 @@ namespace BetterLoadSaveGame
         internal List<SaveGameInfo> _saves = new List<SaveGameInfo>();
         private SortModeEnum _sortMode = SortModeEnum.FileTime;
 
+        internal string ArchiveDir { set; get; }
+
         public SaveGameCollection(SaveWatcher saveWatcher)
         {
-            saveWatcher.OnSave += OnSave;
+            if (saveWatcher != null)
+                saveWatcher.OnSave += OnSave;
+            ArchiveDir = "";
             LoadAllGames();
         }
 
         public void LoadAllGames()
         {
             _saves.Clear();
-            foreach (var file in Directory.GetFiles(Util.SaveDir))
+            foreach (var file in Directory.GetFiles(Util.SaveDir + ArchiveDir))
             {
                 if (file.EndsWith(".sfs"))
                 {
-                    var fullPath = Path.Combine(Util.SaveDir, file);
-                    _saves.Add(new SaveGameInfo(file));
+                    if (!file.EndsWith("persistent.sfs") || !HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().hidePersistent)
+                    {
+                        var fullPath = Path.Combine(Util.SaveDir, file);
+                        _saves.Add(new SaveGameInfo(file));
+                    }
                 }
             }
             UpdateSort();
@@ -58,15 +65,17 @@ namespace BetterLoadSaveGame
 
         private void OnSave(object sender, System.IO.FileSystemEventArgs e)
         {
-            //
-            // The following is because of behaviour on OSX 
-            // That sends multiple OnSave messages for a single save
-            //
+            if (SystemInfo.operatingSystemFamily != OperatingSystemFamily.Windows)
+            {
+                //
+                // The following is because of behaviour on OSX 
+                // That sends multiple OnSave messages for a single save
+                //
 
-            if (Time.realtimeSinceStartup - lastTimeSaved < 15)
-                return;
-            lastTimeSaved = Time.realtimeSinceStartup;
-
+                if (Time.realtimeSinceStartup - lastTimeSaved < 2)
+                    return;
+                lastTimeSaved = Time.realtimeSinceStartup;
+            }
             if (e.FullPath.EndsWith(".sfs"))
             {
                 var newSave = new SaveGameInfo(e.FullPath);

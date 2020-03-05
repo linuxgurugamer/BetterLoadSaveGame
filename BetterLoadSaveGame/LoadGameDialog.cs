@@ -82,7 +82,7 @@ namespace BetterLoadSaveGame
             }
             base.LateUpdate();
 
-            if (HighLogic.CurrentGame.Parameters.CustomParams<BLSG>().replaceStock)
+            if (HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().replaceStock)
             {
                 bool quickloadKeyDown = GameSettings.QUICKLOAD.GetKeyDown(false);
                 if (InputLockManager.IsUnlocked(ControlTypes.QUICKLOAD) && quickloadKeyDown)
@@ -125,6 +125,7 @@ namespace BetterLoadSaveGame
                 if (Visible)
                 {
                     _scrollPos = new Vector2();
+                    Main.fetch.RefreshSaves();
                 }
                 else
                 {
@@ -151,7 +152,7 @@ namespace BetterLoadSaveGame
         GUIStyle buttonStyleOrange;
         public void OnGUI()
         {
-            if (!HighLogic.CurrentGame.Parameters.CustomParams<BLSG>().useAlternateSkin)
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin)
                 GUI.skin = HighLogic.Skin;
 
             if (firstTime)
@@ -168,7 +169,9 @@ namespace BetterLoadSaveGame
 
             if (Visible)
             {
-
+                string title = "Load Game";
+                if (useArchives)
+                    title += " from Archives";
                 _windowRect = ClickThruBlocker.GUILayoutWindow(_instanceID, _windowRect, (windowID) =>
                 {
                     GUI.enabled = !_visibleDeleteDialog;
@@ -187,8 +190,32 @@ namespace BetterLoadSaveGame
                     {
                         _visibleDeleteDialog = true;
                     }
+                    if (!useArchives)
+                    {
+                        if (GUILayout.Button("Archive", GUILayout.Width(90), GUILayout.Height(30)))
+                        {
+                            ManageOldSaves.MoveSaveToArchive(selectedSave);
+                            Main.fetch.RefreshSaves();
+                            lastButtonclicked = "";
+                        }
+                        GUILayout.FlexibleSpace();
+                    }
                     GUI.enabled = !_visibleDeleteDialog;
 
+#if false
+                    if (!useArchives)
+                    {
+                        GUILayout.FlexibleSpace();
+                        string s = "Archive";
+                        if (HighLogic.CurrentGame.Parameters.CustomParams<BLSG2>().deleteSaves)
+                            s = "Delete";
+                        if (GUILayout.Button(s + " old saves"))
+                        {
+                            ManageOldSaves.ManageSaves();
+                        }
+                    }
+                    GUILayout.FlexibleSpace();
+#endif
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("Cancel", GUI.skin.button, GUILayout.Width(90), GUILayout.Height(30)))
                     {
@@ -212,7 +239,7 @@ namespace BetterLoadSaveGame
                     GUILayout.EndHorizontal();
                     GUILayout.EndVertical();
                     GUI.DragWindow();
-                }, "Load Game", GUI.skin.window);
+                }, title, GUI.skin.window);
 
             }
             if (lastButtonclicked != "" && !Visible)
@@ -234,7 +261,7 @@ namespace BetterLoadSaveGame
                     GUILayout.Label("Are you sure you want to delete this save?\nYou will lose all progress and ships in it.");
                     if (GUILayout.Button("Delete Save"))
                     {
-                        DeleteSaveGame(selectedSave);
+                        ManageOldSaves.DeleteSaveGame(selectedSave);
                         _visibleDeleteDialog = false;
                         // Visible = false;
                         lastButtonclicked = "";
@@ -252,14 +279,13 @@ namespace BetterLoadSaveGame
         bool clicked = false;
         string lastButtonclicked = "";
         SaveGameInfo selectedSave;
+        bool useArchives = false;
 
         private void RenderGameList()
         {
             GUILayout.BeginHorizontal();
             _scrollPos = GUILayout.BeginScrollView(_scrollPos, GUI.skin.scrollView);
-            //int saveIndex = 0;
             for (int saveIndex = 0; saveIndex < _saveGameCollection._saves.Count; saveIndex++)
-            //foreach (var save in _saveGameCollection.Saves)
             {
                 SaveGameInfo save = _saveGameCollection._saves[saveIndex];
                 // Determine if the button is visible.
@@ -320,9 +346,29 @@ namespace BetterLoadSaveGame
 
         private void RenderSortButtonsPanel()
         {
+            if (HighLogic.CurrentGame.Parameters.CustomParams<BLSG2>().archiveSaves)
+            {
+                string t = "Use Archives";
+                GUIContent c = new GUIContent(t);
+                Vector2 s = (HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin ? GUI.skin.toggle.CalcSize(c) : GUI.skin.textField.CalcSize(c));
+
+                bool b = useArchives;
+                useArchives = GUI.Toggle(new Rect(2, 2, s.x, s.y), useArchives, "Use Archives");
+                if (b != useArchives)
+                {
+                    if (useArchives)
+                    {
+                        _saveGameCollection.ArchiveDir = ManageOldSaves.ARCHIVEDIR;
+                    }
+                    else
+                    {
+                        _saveGameCollection.ArchiveDir = "";
+                    }
+                    Main.fetch.RefreshSaves();
+                }
+            }
             GUILayout.BeginHorizontal();
             GUILayout.Label("Sort:", GUILayout.ExpandWidth(false));
-
             RenderSortButton(SortModeEnum.FileTime, "File Time ");
             RenderSortButton(SortModeEnum.GameTime, "Game Time ");
             RenderSortButton(SortModeEnum.Name, "Name ");
@@ -331,12 +377,12 @@ namespace BetterLoadSaveGame
 
             string text = "Use alt. skin";
             GUIContent content = new GUIContent(text);
-            Vector2 size = (HighLogic.CurrentGame.Parameters.CustomParams<BLSG>().useAlternateSkin ? GUI.skin.toggle.CalcSize(content) : GUI.skin.textField.CalcSize(content));
+            Vector2 size = (HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin ? GUI.skin.toggle.CalcSize(content) : GUI.skin.textField.CalcSize(content));
 
-            bool newVal = GUILayout.Toggle(HighLogic.CurrentGame.Parameters.CustomParams<BLSG>().useAlternateSkin, text, GUILayout.ExpandWidth(false), GUILayout.Width(size.x + 30));
-            if (newVal != HighLogic.CurrentGame.Parameters.CustomParams<BLSG>().useAlternateSkin)
+            bool newVal = GUILayout.Toggle(HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin, text, GUILayout.ExpandWidth(false), GUILayout.Width(size.x + 30));
+            if (newVal != HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin)
             {
-                HighLogic.CurrentGame.Parameters.CustomParams<BLSG>().useAlternateSkin = newVal;
+                HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin = newVal;
                 firstTime = true;
             }
 
@@ -357,7 +403,7 @@ namespace BetterLoadSaveGame
         {
             var currentSort = _saveGameCollection.SortMode;
             GUIContent content = new GUIContent(text);
-            Vector2 size = (HighLogic.CurrentGame.Parameters.CustomParams<BLSG>().useAlternateSkin ? GUI.skin.toggle.CalcSize(content) : GUI.skin.textField.CalcSize(content));
+            Vector2 size = (HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin ? GUI.skin.toggle.CalcSize(content) : GUI.skin.textField.CalcSize(content));
 
             if (GUILayout.Toggle(currentSort == buttonSort, text, GUILayout.ExpandWidth(false), GUILayout.Width(size.x + 20)) && currentSort != buttonSort)
             {
@@ -381,7 +427,7 @@ namespace BetterLoadSaveGame
         {
             Log.Info("Loading save: {0}", save.SaveFile.Name);
             var name = Path.GetFileNameWithoutExtension(save.SaveFile.Name);
-            var game = GamePersistence.LoadGame(name, HighLogic.SaveFolder, true, false);
+            var game = GamePersistence.LoadGame(name, HighLogic.SaveFolder + _saveGameCollection.ArchiveDir, true, false);
 
             // For some reason, loading games that start at the space center
             // just loads the latest persistent save instead. Copying the save
@@ -410,28 +456,14 @@ namespace BetterLoadSaveGame
 
         private void CopySaveFile(string from, string to)
         {
-            var sourceFile = Path.Combine(Util.SaveDir, from);
+            var sourceFile = Path.Combine(Util.SaveDir + _saveGameCollection.ArchiveDir, from);
+            Log.Info("CopySaveFile, Util.SaveDir: " + Util.SaveDir + ", from: " + from + ", sourceFile: " + sourceFile);
             if (File.Exists(sourceFile))
             {
                 var destFile = Path.Combine(Util.SaveDir, to);
                 File.Copy(sourceFile, destFile, overwrite: true);
                 File.SetLastWriteTime(destFile, DateTime.Now);
             }
-        }
-
-        private void DeleteSaveGame(SaveGameInfo sgi)
-        {
-            var name = Path.GetFileNameWithoutExtension(sgi.SaveFile.Name);
-            var game = GamePersistence.LoadGame(name, HighLogic.SaveFolder, true, false);
-
-            DeleteFile(HighLogic.SaveFolder + "/" + name + ".sfs");
-            DeleteFile(HighLogic.SaveFolder + "/" + name + ".loadmeta");
-            DeleteFile(HighLogic.SaveFolder + "/" + name + "-thumb.png");
-            Main.fetch.RefreshSaves();
-        }
-        void DeleteFile(string str)
-        {
-            File.Delete(KSPUtil.ApplicationRootPath + "saves/" + str);
         }
     }
 }

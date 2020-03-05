@@ -1,9 +1,3 @@
-TODO
-
-Add buttons to close like normal file load dialog has
-Try to intercept stock F9
-
-
 # BetterLoadSaveGame
 
 An addon for Kerbal Space Program designed to improve the user interface for loading save games.
@@ -26,9 +20,38 @@ Alternatively, download the latest release and extract the contents of the GameD
 
 ## Usage
 
-Press F7 in game to toggle the window on/off, and click on the buttons to load games.
-
 Note for best screenshot quality, ensure "Texture Quality" is set to "Full Res" in your game options (under "Graphics").
+
+Usage
+
+Settings are available in the stock Settings pages.  The following options are available:
+
+In the General column:
+    Replace stock Load Game dialog on F9    This replaces the Load Game dialog, if disabled, then F7 opens the window
+    Don't show the persistent.sfs file  
+    Use alternate skin                      A more compact skin which a number of mods use
+
+In the Deletion/Archive column:
+    Archive old saves               Archive and Delete are exclusive, only one can be active.
+    Delete old saves                Both can be disabled to disable this functionality
+    Unit: Hours                     Hours and Days are mutually exclusive
+    Unit: Days
+    File age in specified units     The number of Hours/Days a save has to be to be either archived or deleted
+
+The BLSG window has a number of toggles and buttons:
+At the top are:
+
+    Use Archives    A toggle which has the mod show all the archived saves
+    Sort            One of three different ways to sort the saves in the list
+
+At the bottom are the following buttons:
+
+    Delete      Delete selected save
+    Archive     Move the selected save into the Archive directory
+    Cancel      Close the dialog
+    Load        Load the selected save
+
+
 
 ## Recommended mods
 

@@ -58,6 +58,7 @@
     <Compile Include="LoadGameDialog.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="ManageOldSaves.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SaveGameInfo.cs" />
     <Compile Include="SaveGameCollection.cs" />
