@@ -29,14 +29,17 @@ namespace BetterLoadSaveGame
         public void LoadAllGames()
         {
             _saves.Clear();
-            foreach (var file in Directory.GetFiles(Util.SaveDir + ArchiveDir))
+            if (Directory.Exists(Util.SaveDir + ArchiveDir))
             {
-                if (file.EndsWith(".sfs"))
+                foreach (var file in Directory.GetFiles(Util.SaveDir + ArchiveDir))
                 {
-                    if (!file.EndsWith("persistent.sfs") || !HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().hidePersistent)
+                    if (file.EndsWith(".sfs"))
                     {
-                        var fullPath = Path.Combine(Util.SaveDir, file);
-                        _saves.Add(new SaveGameInfo(file));
+                        if (!file.EndsWith("persistent.sfs") || !HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().hidePersistent)
+                        {
+                            var fullPath = Path.Combine(Util.SaveDir, file);
+                            _saves.Add(new SaveGameInfo(file));
+                        }
                     }
                 }
             }

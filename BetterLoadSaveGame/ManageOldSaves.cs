@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+using static BetterLoadSaveGame.Main;
+
+
 namespace BetterLoadSaveGame
 {
     class ManageOldSaves
@@ -34,7 +37,7 @@ namespace BetterLoadSaveGame
                     if (HighLogic.CurrentGame.Parameters.CustomParams<BLSG2>().archiveSaves)
                         MoveSaveToArchive(save);
                     if (HighLogic.CurrentGame.Parameters.CustomParams<BLSG2>().deleteSaves)
-                        DeleteSaveGame(save);
+                        DeleteSaveGame("", save);
                 }
             }
             if (HighLogic.CurrentGame.Parameters.CustomParams<BLSG2>().archiveSaves)
@@ -64,9 +67,9 @@ namespace BetterLoadSaveGame
                 return;
             }
 
-            MoveFile(sgi.SaveFile.DirectoryName, name ,  ".sfs", suffix, path);
-            MoveFile(sgi.SaveFile.DirectoryName, name ,  ".loadmeta", suffix, path);
-            MoveFile(sgi.SaveFile.DirectoryName, name ,  "-thumb.png", suffix, path);
+            MoveFile(sgi.SaveFile.DirectoryName, name, ".sfs", suffix, path);
+            MoveFile(sgi.SaveFile.DirectoryName, name, ".loadmeta", suffix, path);
+            MoveFile(sgi.SaveFile.DirectoryName, name, "-thumb.png", suffix, path);
         }
 
         static void MoveFile(string dirName, string fname, string suffix, string cntsuffix, string path)
@@ -74,17 +77,17 @@ namespace BetterLoadSaveGame
             Log.Info("MoveFile, old: " + dirName + "/" + fname + suffix);
             Log.Info("MoveFile, new: " + path + "/" + fname + cntsuffix + suffix);
             if (File.Exists(dirName + "/" + fname + suffix))
-                File.Move(dirName + "/" + fname+suffix, path + "/" + fname+cntsuffix+suffix);
+                File.Move(dirName + "/" + fname + suffix, path + "/" + fname + cntsuffix + suffix);
         }
 
-        internal static void DeleteSaveGame(SaveGameInfo sgi)
+        internal static void DeleteSaveGame(string dir, SaveGameInfo sgi)
         {
             var name = Path.GetFileNameWithoutExtension(sgi.SaveFile.Name);
-            var game = GamePersistence.LoadGame(name, HighLogic.SaveFolder, true, false);
+            var game = GamePersistence.LoadGame(name, HighLogic.SaveFolder + dir, true, false);
 
-            DeleteFile(HighLogic.SaveFolder + "/" + name + ".sfs");
-            DeleteFile(HighLogic.SaveFolder + "/" + name + ".loadmeta");
-            DeleteFile(HighLogic.SaveFolder + "/" + name + "-thumb.png");
+            DeleteFile(HighLogic.SaveFolder + dir + "/" + name + ".sfs");
+            DeleteFile(HighLogic.SaveFolder + dir + "/" + name + ".loadmeta");
+            DeleteFile(HighLogic.SaveFolder + dir + "/" + name + "-thumb.png");
             Main.fetch.RefreshSaves();
         }
         static void DeleteFile(string str)

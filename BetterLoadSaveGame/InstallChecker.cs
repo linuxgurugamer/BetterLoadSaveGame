@@ -41,7 +41,7 @@ namespace BetterLoadSaveGame
     internal class InstallChecker : MonoBehaviour
     {
         private const string MODNAME = "Better Load Save Game";
-        private const string FOLDERNAME = "BetterLoadSaveGame";
+        internal const string FOLDERNAME = "BetterLoadSaveGame";
         private const string EXPECTEDPATH = FOLDERNAME + "/Plugins";
 
         protected void Start()

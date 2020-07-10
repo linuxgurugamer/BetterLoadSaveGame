@@ -4,8 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-
-
+using SpaceTuxUtility;
+using static BetterLoadSaveGame.Main;
+using AutoQuickSaveSystem;
 
 namespace BetterLoadSaveGame
 {
@@ -147,6 +148,7 @@ namespace BetterLoadSaveGame
 
 
         bool firstTime = true;
+        bool oldAltSkin = HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin;
         GUIStyle gameButtonStyle = null;
         GUIStyle buttonStyleYellow;
         GUIStyle buttonStyleOrange;
@@ -155,7 +157,7 @@ namespace BetterLoadSaveGame
             if (!HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin)
                 GUI.skin = HighLogic.Skin;
 
-            if (firstTime)
+            if (firstTime || oldAltSkin != HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin)
             {
                 gameButtonStyle = new GUIStyle(GUI.skin.button);
                 gameButtonStyle.alignment = TextAnchor.MiddleLeft;
@@ -163,7 +165,7 @@ namespace BetterLoadSaveGame
                 buttonStyleYellow.normal.textColor = Color.yellow;
                 buttonStyleOrange = new GUIStyle(GUI.skin.button);
                 buttonStyleOrange.normal.textColor = HtmlToColor("#fdb915");
-
+                oldAltSkin = HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin;
                 firstTime = false;
             }
 
@@ -178,6 +180,7 @@ namespace BetterLoadSaveGame
 
                     GUILayout.BeginVertical();
                     RenderSortButtonsPanel();
+                    RenderAutoQuickSaveFilter();
                     RenderFilterPanel();
                     RenderGameList();
 
@@ -202,31 +205,10 @@ namespace BetterLoadSaveGame
                     }
                     GUI.enabled = !_visibleDeleteDialog;
 
-#if false
-                    if (!useArchives)
-                    {
-                        GUILayout.FlexibleSpace();
-                        string s = "Archive";
-                        if (HighLogic.CurrentGame.Parameters.CustomParams<BLSG2>().deleteSaves)
-                            s = "Delete";
-                        if (GUILayout.Button(s + " old saves"))
-                        {
-                            ManageOldSaves.ManageSaves();
-                        }
-                    }
-                    GUILayout.FlexibleSpace();
-#endif
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("Cancel", GUI.skin.button, GUILayout.Width(90), GUILayout.Height(30)))
                     {
                         Visible = false;
-#if false
-                        if (openedViaF9)
-                        {
-                            DisplayPauseMenu();
-                        }
-                        else
-#endif
                         FlightDriver.SetPause(false, false);
                     }
 
@@ -261,7 +243,15 @@ namespace BetterLoadSaveGame
                     GUILayout.Label("Are you sure you want to delete this save?\nYou will lose all progress and ships in it.");
                     if (GUILayout.Button("Delete Save"))
                     {
-                        ManageOldSaves.DeleteSaveGame(selectedSave);
+
+                        if (useArchives)
+                        {
+                            ManageOldSaves.DeleteSaveGame(ManageOldSaves.ARCHIVEDIR, selectedSave);
+                        }
+                        else
+                        {
+                            ManageOldSaves.DeleteSaveGame("", selectedSave);
+                        }
                         _visibleDeleteDialog = false;
                         // Visible = false;
                         lastButtonclicked = "";
@@ -389,10 +379,32 @@ namespace BetterLoadSaveGame
             GUILayout.EndHorizontal();
         }
 
+        private void RenderAutoQuickSaveFilter()
+        {
+            Log.Info("RenderautoQuickSaveFilter");
+            if (HasMod.hasMod("AutoQuickSaveSystem"))
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("AQSS prefixes:");
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button(Quicksave.LAUNCH_QS_PREFIX, GUILayout.Width(120)))
+                    _filterText = Quicksave.LAUNCH_QS_PREFIX;
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button(Quicksave.AUTO_QS_PREFIX, GUILayout.Width(120)))
+                    _filterText = Quicksave.AUTO_QS_PREFIX;
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button(Quicksave.SCENE_QS_PREFIX, GUILayout.Width(120)))
+                    _filterText = Quicksave.SCENE_QS_PREFIX;
+                GUILayout.EndHorizontal();
+                GUILayout.Space(5);
+            }
+        }
+
         private void RenderFilterPanel()
         {
             GUILayout.BeginHorizontal();
-
+            if (GUILayout.Button(new GUIContent(Main.clearBtn), GUILayout.Width(32)))
+                _filterText = "";
             GUILayout.Label("Filter:", GUILayout.ExpandWidth(false));
             _filterText = GUILayout.TextField(_filterText);
 
@@ -420,6 +432,8 @@ namespace BetterLoadSaveGame
 
                 Log.Info("Changing visibility to: {0}", _visibleLoadScreen);
                 FlightDriver.SetPause(_visibleLoadScreen, false);
+                if (_visibleLoadScreen == false)
+                    firstTime = true;
             }
         }
 

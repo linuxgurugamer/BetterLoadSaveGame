@@ -5,6 +5,8 @@ using System.Text.RegularExpressions;
 using ToolbarControl_NS;
 using UnityEngine;
 
+using static BetterLoadSaveGame.Main;
+
 namespace BetterLoadSaveGame
 {
     class ScreenshotManager : ActionGenerator

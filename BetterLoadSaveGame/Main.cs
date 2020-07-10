@@ -1,19 +1,37 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using ToolbarControl_NS;
 using UnityEngine;
+
+using static BetterLoadSaveGame.Main;
+
 
 namespace BetterLoadSaveGame
 {
+
+    [KSPAddon(KSPAddon.Startup.Instantly, true)]
+    public class InitLog : MonoBehaviour
+    {
+        protected void Awake()
+        {
+            Main.Log = new KSP_Log.Log("AQSS"
+#if DEBUG
+                , KSP_Log.Log.LEVEL.INFO
+#endif
+                );
+        }
+    }
+
+
     [KSPAddon(KSPAddon.Startup.AllGameScenes, false)]
-    public class ManageSaves:MonoBehaviour
+    public class ManageSaves : MonoBehaviour
     {
         public void start()
         {
             InvokeRepeating("Delay", 60f, 60f);
         }
-        
+
         void Delay()
         {
             Log.Info("Calling ManageSaves");
@@ -30,8 +48,12 @@ namespace BetterLoadSaveGame
         private SaveGameCollection _saveGameCollection;
         private LoadGameDialog _loadGameDialog;
 
+        public static KSP_Log.Log Log;
+        internal static Texture2D clearBtn = new Texture2D(2, 2);
+
         public void Start()
         {
+
             try
             {
                 fetch = this;
@@ -45,6 +67,10 @@ namespace BetterLoadSaveGame
             catch (Exception ex)
             {
                 Log.Error(ex.ToString());
+            }
+            if (!ToolbarControl.LoadImageFromFile(ref clearBtn, "GameData/" + InstallChecker.FOLDERNAME+"/PluginData/clear-30"))
+            {
+                Log.Error("Error loading clear-30 image");
             }
         }
 
