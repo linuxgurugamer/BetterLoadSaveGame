@@ -1,6 +1,6 @@
 ChangeLog
 
-2.1.2
+2.5.2
 	Fixed nullref when trying to load archvies when no archive directory exists
 	Added dependency to SpaceTuxLibrary
 	Removed Log class, using the one in SpaceTuxLibrary
