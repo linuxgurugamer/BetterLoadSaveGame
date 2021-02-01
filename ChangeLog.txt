@@ -1,5 +1,9 @@
 ChangeLog
 
+2.5.2.1
+	Fixed name in logging
+	Added reinitting if strange things happen in main.cs
+
 2.5.2
 	Fixed nullref when trying to load archvies when no archive directory exists
 	Added dependency to SpaceTuxLibrary

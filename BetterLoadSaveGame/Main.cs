@@ -15,7 +15,7 @@ namespace BetterLoadSaveGame
     {
         protected void Awake()
         {
-            Main.Log = new KSP_Log.Log("AQSS"
+            Main.Log = new KSP_Log.Log("BetterLoadSaveGame"
 #if DEBUG
                 , KSP_Log.Log.LEVEL.INFO
 #endif
@@ -68,7 +68,7 @@ namespace BetterLoadSaveGame
             {
                 Log.Error(ex.ToString());
             }
-            if (!ToolbarControl.LoadImageFromFile(ref clearBtn, "GameData/" + InstallChecker.FOLDERNAME+"/PluginData/clear-30"))
+            if (!ToolbarControl.LoadImageFromFile(ref clearBtn, "GameData/" + InstallChecker.FOLDERNAME + "/PluginData/clear-30"))
             {
                 Log.Error("Error loading clear-30 image");
             }
@@ -83,12 +83,16 @@ namespace BetterLoadSaveGame
         {
             try
             {
+                // These should never have an error
                 _screenshotManager.LateUpdate();
                 _loadGameDialog.LateUpdate();
             }
             catch (Exception ex)
             {
                 Log.Error(ex.ToString());
+
+                // Something strange happened, just reinit
+                Start();
             }
         }
 
@@ -101,6 +105,8 @@ namespace BetterLoadSaveGame
             catch (Exception ex)
             {
                 Log.Error(ex.ToString());
+                // Something strange happened, just reinit
+                Start();
             }
         }
 

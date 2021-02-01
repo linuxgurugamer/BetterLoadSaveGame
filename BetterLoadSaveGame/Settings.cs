@@ -31,10 +31,10 @@ namespace BetterLoadSaveGame
         public bool useAlternateSkin = false;
 
 
-        public override void SetDifficultyPreset(GameParameters.Preset preset)        {        }
-        public override bool Enabled(MemberInfo member, GameParameters parameters)        {            return true;        }
-        public override bool Interactible(MemberInfo member, GameParameters parameters)        {            return true;        }
-        public override IList ValidValues(MemberInfo member)        {           return null;        }
+        public override void SetDifficultyPreset(GameParameters.Preset preset) { }
+        public override bool Enabled(MemberInfo member, GameParameters parameters) { return true; }
+        public override bool Interactible(MemberInfo member, GameParameters parameters) { return true; }
+        public override IList ValidValues(MemberInfo member) { return null; }
     }
 
     public class BLSG2 : GameParameters.CustomParameterNode
@@ -75,8 +75,8 @@ namespace BetterLoadSaveGame
         public override bool Enabled(MemberInfo member, GameParameters parameters) { return true; }
 
 
-        public override bool Interactible(MemberInfo member, GameParameters parameters) 
-        { 
+        public override bool Interactible(MemberInfo member, GameParameters parameters)
+        {
             if (!initted)
             {
                 initted = true;
@@ -101,7 +101,7 @@ namespace BetterLoadSaveGame
             oldHourUnit = hourUnit;
             oldDayUnit = dayUnit;
 
-            return true; 
+            return true;
         }
 
         public override IList ValidValues(MemberInfo member) { return null; }
