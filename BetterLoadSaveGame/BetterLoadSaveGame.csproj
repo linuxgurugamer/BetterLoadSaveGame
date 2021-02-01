@@ -86,8 +86,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-set KSPDIR=$(KSPDIR)
+    <PostBuildEvent>set KSPDIR=$(KSPDIR)
 
 IF "%25KSPDIR%25"=="" (
 
