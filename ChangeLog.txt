@@ -1,5 +1,9 @@
 ChangeLog
 
+2.5.3
+	Fixed F9 on the main screen (been broken for a long time)
+	Fixed bad load of placeholder image
+
 2.5.2.1
 	Fixed name in logging
 	Added reinitting if strange things happen in main.cs

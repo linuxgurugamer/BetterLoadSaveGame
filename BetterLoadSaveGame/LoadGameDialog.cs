@@ -38,6 +38,7 @@ namespace BetterLoadSaveGame
             }
             yield return null;
             LoadGameDialog.Instance.ToggleVisibility(true);
+            Destroy(this);
         }
     }
 
@@ -86,6 +87,7 @@ namespace BetterLoadSaveGame
             if (HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().replaceStock)
             {
                 bool quickloadKeyDown = GameSettings.QUICKLOAD.GetKeyDown(false);
+
                 if (InputLockManager.IsUnlocked(ControlTypes.QUICKLOAD) && quickloadKeyDown)
                 {
                     GameObject obj = new GameObject();
@@ -97,7 +99,18 @@ namespace BetterLoadSaveGame
                     if (_toggleVisibility)
                         _toggleVisibility = false;
                     if (quickloadKeyDown)
-                        Visible = false;
+                    {
+                        //Log.Info("Visible 2");
+                        //Visible = false;
+                    }
+
+                    if (quickloadKeyDown)
+                    {
+                        //ToggleVisibility();
+                        GameObject obj = new GameObject();
+                        var move = obj.AddComponent<CloseLoadGameDialog>();
+                        move.CloseIt();
+                    }
                 }
             }
             else
@@ -122,6 +135,7 @@ namespace BetterLoadSaveGame
                 InputLockManager.SetControlLock(~(ControlTypes.UI | ControlTypes.PAUSE), "gamePause");
 
                 _toggleVisibility = true;
+
                 Visible = !Visible;
                 if (Visible)
                 {
@@ -381,7 +395,6 @@ namespace BetterLoadSaveGame
 
         private void RenderAutoQuickSaveFilter()
         {
-            Log.Info("RenderautoQuickSaveFilter");
             if (HasMod.hasMod("AutoQuickSaveSystem"))
             {
                 GUILayout.BeginHorizontal();
@@ -430,7 +443,6 @@ namespace BetterLoadSaveGame
             {
                 _visibleLoadScreen = value;
 
-                Log.Info("Changing visibility to: {0}", _visibleLoadScreen);
                 FlightDriver.SetPause(_visibleLoadScreen, false);
                 if (_visibleLoadScreen == false)
                     firstTime = true;
@@ -439,7 +451,6 @@ namespace BetterLoadSaveGame
 
         private void LoadSaveGame(SaveGameInfo save)
         {
-            Log.Info("Loading save: {0}", save.SaveFile.Name);
             var name = Path.GetFileNameWithoutExtension(save.SaveFile.Name);
             var game = GamePersistence.LoadGame(name, HighLogic.SaveFolder + _saveGameCollection.ArchiveDir, true, false);
 
@@ -471,7 +482,6 @@ namespace BetterLoadSaveGame
         private void CopySaveFile(string from, string to)
         {
             var sourceFile = Path.Combine(Util.SaveDir + _saveGameCollection.ArchiveDir, from);
-            Log.Info("CopySaveFile, Util.SaveDir: " + Util.SaveDir + ", from: " + from + ", sourceFile: " + sourceFile);
             if (File.Exists(sourceFile))
             {
                 var destFile = Path.Combine(Util.SaveDir, to);
