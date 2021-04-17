@@ -222,8 +222,10 @@ namespace BetterLoadSaveGame
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("Cancel", GUI.skin.button, GUILayout.Width(90), GUILayout.Height(30)))
                     {
+
                         Visible = false;
                         FlightDriver.SetPause(false, false);
+                        return;
                     }
 
                     if (lastButtonclicked == "" || _visibleDeleteDialog)

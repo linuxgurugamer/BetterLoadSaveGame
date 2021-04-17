@@ -1,5 +1,8 @@
 ChangeLog
 
+2.5.3.1
+	Fixed Cancel button loading selected file
+
 2.5.3
 	Fixed F9 on the main screen (been broken for a long time)
 	Fixed bad load of placeholder image
@@ -24,7 +27,7 @@ ChangeLog
 	Wrote new instructions
 
 2.5.1.2
-	Fixed the other OnSave reference, with the same solution as the previous fix
+6
 
 2.5.1.1
 	Fixed 2nd F9, meant to close window, doing a reload of the quicksave

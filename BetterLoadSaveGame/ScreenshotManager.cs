@@ -80,6 +80,8 @@ namespace BetterLoadSaveGame
 
         private void SaveScreenshot(string filename)
         {
+            if (File.Exists(filename))
+                File.Delete(filename);
             ScreenCapture.CaptureScreenshot(filename);
         }
 
