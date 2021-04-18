@@ -1,6 +1,9 @@
 ChangeLog
 
-2.5.3.1
+2.5.3.3
+	Really fixed the Cancel button issue
+
+2.5.3.2
 	Fixed Cancel button loading selected file
 
 2.5.3

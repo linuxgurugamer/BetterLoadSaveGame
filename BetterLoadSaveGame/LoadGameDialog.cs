@@ -225,6 +225,7 @@ namespace BetterLoadSaveGame
 
                         Visible = false;
                         FlightDriver.SetPause(false, false);
+                        lastButtonclicked = "";
                         return;
                     }
 
