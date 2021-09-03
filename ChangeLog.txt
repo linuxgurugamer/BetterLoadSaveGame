@@ -1,5 +1,9 @@
 ChangeLog
 
+2.5.3.4
+	Added AssemblyFileVersion
+	Updated version file for 1.12
+
 2.5.3.3
 	Really fixed the Cancel button issue
 
