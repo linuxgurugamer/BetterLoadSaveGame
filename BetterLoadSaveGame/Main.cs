@@ -68,7 +68,7 @@ namespace BetterLoadSaveGame
             {
                 Log.Error(ex.ToString());
             }
-            if (!ToolbarControl.LoadImageFromFile(ref clearBtn, "GameData/" + InstallChecker.FOLDERNAME + "/PluginData/clear-30"))
+            if (!ToolbarControl.LoadImageFromFile(ref clearBtn, KSPUtil.ApplicationRootPath + "GameData/" + InstallChecker.FOLDERNAME + "/PluginData/clear-30"))
             {
                 Log.Error("Error loading clear-30 image");
             }

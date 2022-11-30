@@ -35,7 +35,7 @@ namespace BetterLoadSaveGame
 
                 //_placeholder = GameDatabase.Instance.GetTexture("BetterLoadSaveGame/placeholder", false);
                 _placeholder = new Texture2D(2, 2);
-                ToolbarControl.LoadImageFromFile(ref _placeholder, "GameData/BetterLoadSaveGame/PluginData/placeholder");
+                ToolbarControl.LoadImageFromFile(ref _placeholder, KSPUtil.ApplicationRootPath + "GameData/BetterLoadSaveGame/PluginData/placeholder");
             }
             catch (Exception ex)
             {
