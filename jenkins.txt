@@ -35,8 +35,8 @@
 
 # 3:SOURCEFILE, DESTDIR
 3:BetterLoadSaveGame.version,GameData/BetterLoadSaveGame
-#3:LICENSE.md,GameData/KerbalHotSeat
-#3:README.md,GameData/KerbalHotSeat
+3:LICENSE.txt,GameData/BetterLoadSaveGame
+3:README.md,GameData/BetterLoadSaveGame
 
 # 4:SOURCDIR, DESTDIR
 #4:Textures,GameData/ManeuverQueue/Textures
