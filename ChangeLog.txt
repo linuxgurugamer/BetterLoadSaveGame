@@ -1,5 +1,8 @@
 ChangeLog
 
+2.5.3.7
+	Added a try/catch around the actual resize code: TextureScale.Bilinear  
+
 2.5.3.6
 	Updated version file to use github for new version info
 	Copied web page to README-WEB.md

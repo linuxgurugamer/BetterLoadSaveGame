@@ -56,7 +56,7 @@ namespace BetterLoadSaveGame
             //
             if (SystemInfo.operatingSystemFamily != OperatingSystemFamily.Windows)
             {
-                if (Time.realtimeSinceStartup - lastTimeSaved <2)
+                if (Time.realtimeSinceStartup - lastTimeSaved < 2)
                     return;
                 lastTimeSaved = Time.realtimeSinceStartup;
             }
@@ -92,8 +92,17 @@ namespace BetterLoadSaveGame
             var fileData = File.ReadAllBytes(filename);
             var tex = new Texture2D(2, 2);
             tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
-            TextureScale.Bilinear(tex, 150, 94);
-
+            Log.Info($"filename: [{filename}]      filedata size: {fileData.Length}");
+            try
+            {
+                TextureScale.Bilinear(tex, 150, 94);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"ResizeScreenshot error: {ex.Message}");
+                Log.Error($"filename: [{filename}]");
+                Log.Error($"filedata size: {fileData.Length}");
+            }
             var outFile = Regex.Replace(filename, @"\.png", "-thumb.png");
 
             var bytes = tex.EncodeToPNG();
