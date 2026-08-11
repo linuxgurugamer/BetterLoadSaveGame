@@ -1,5 +1,4 @@
-﻿
-using System.Collections;
+﻿using System.Collections;
 using System.Reflection;
 
 namespace BetterLoadSaveGame
@@ -10,7 +9,7 @@ namespace BetterLoadSaveGame
     // HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin
     public class BLSG1 : GameParameters.CustomParameterNode
     {
-        public override string Title { get { return "#LOC_BLSG_GENERAL"; } }
+        public override string Title { get { return "#LOC_BLSG_SETTINGS_GENERAL"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
         public override string Section { get { return "BetterLoadSaveGame"; } }
         public override string DisplaySection { get { return "Better Load Save Game"; } }
@@ -18,16 +17,16 @@ namespace BetterLoadSaveGame
         public override bool HasPresets { get { return true; } }
 
 
-        [GameParameters.CustomParameterUI("#LOC_BLSG_REPLACE_STOCK",
-            toolTip = "#LOC_BLSG_REPLACE_STOCK_TIP")]
+        [GameParameters.CustomParameterUI("#LOC_BLSG_SETTINGS_REPLACE_STOCK",
+            toolTip = "#LOC_BLSG_SETTINGS_REPLACE_STOCK_TIP")]
         public bool replaceStock = true;
 
 
-        [GameParameters.CustomParameterUI("#LOC_BLSG_NO_PERSISTENT")]
+        [GameParameters.CustomParameterUI("#LOC_BLSG_SETTINGS_NO_PERSISTENT")]
         public bool hidePersistent = false;
 
-        [GameParameters.CustomParameterUI("#LOC_BLSG_ALT_SKIN",
-            toolTip = "#LOC_BLSG_ALT_SKIN_TIP")]
+        [GameParameters.CustomParameterUI("#LOC_BLSG_SETTINGS_ALT_SKIN",
+            toolTip = "#LOC_BLSG_SETTINGS_ALT_SKIN_TIP")]
         public bool useAlternateSkin = false;
 
 
@@ -39,7 +38,7 @@ namespace BetterLoadSaveGame
 
     public class BLSG2 : GameParameters.CustomParameterNode
     {
-        public override string Title { get { return "#LOC_BLSG_DELETION_ARCHIVE"; } }
+        public override string Title { get { return "#LOC_BLSG_SETTINGS_DELETION_ARCHIVE"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
         public override string Section { get { return "BetterLoadSaveGame"; } }
         public override string DisplaySection { get { return "Better Load Save Game"; } }
@@ -49,25 +48,25 @@ namespace BetterLoadSaveGame
         bool oldArchiveSaves, oldDeleteSaves;
         bool initted = false;
 
-        [GameParameters.CustomParameterUI("#LOC_BLSG_ARCHIVE_OLD",
-            toolTip = "#LOC_BLSG_ARCHIVE_OLD_TIP")]
+        [GameParameters.CustomParameterUI("#LOC_BLSG_SETTINGS_ARCHIVE_OLD",
+            toolTip = "#LOC_BLSG_SETTINGS_ARCHIVE_OLD_TIP")]
         public bool archiveSaves = true;
 
-        [GameParameters.CustomParameterUI("#LOC_BLSG_DELETE_OLD",
-            toolTip = "#LOC_BLSG_DELETE_OLD_TIP")]
+        [GameParameters.CustomParameterUI("#LOC_BLSG_SETTINGS_DELETE_OLD",
+            toolTip = "#LOC_BLSG_SETTINGS_DELETE_OLD_TIP")]
         public bool deleteSaves = false;
 
 
         bool oldHourUnit, oldDayUnit;
 
-        [GameParameters.CustomParameterUI("#LOC_BLSG_UNIT_HOURS",
-            toolTip = "#LOC_BLSG_UNIT_HOURS_TIP")]
+        [GameParameters.CustomParameterUI("#LOC_BLSG_SETTINGS_UNIT_HOURS",
+            toolTip = "#LOC_BLSG_SETTINGS_UNIT_HOURS_TIP")]
         public bool hourUnit = false;
-        [GameParameters.CustomParameterUI("#LOC_BLSG_UNIT_DAYS",
-            toolTip = "#LOC_BLSG_UNIT_DAYS_TIP")]
+        [GameParameters.CustomParameterUI("#LOC_BLSG_SETTINGS_UNIT_DAYS",
+            toolTip = "#LOC_BLSG_SETTINGS_UNIT_DAYS_TIP")]
         public bool dayUnit = true;
 
-        [GameParameters.CustomIntParameterUI("#LOC_BLSG_AGE", minValue = 1, maxValue = 1440)]
+        [GameParameters.CustomIntParameterUI("#LOC_BLSG_SETTINGS_AGE", minValue = 1, maxValue = 1440)]
         public int fileAge = 5;
 
         public override void SetDifficultyPreset(GameParameters.Preset preset) { }

@@ -1,12 +1,13 @@
-﻿using ClickThroughFix;
+﻿using AutoQuickSaveSystem;
+using ClickThroughFix;
+using KSP.Localization;
+using SpaceTuxUtility;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using SpaceTuxUtility;
 using static BetterLoadSaveGame.Main;
-using AutoQuickSaveSystem;
 
 namespace BetterLoadSaveGame
 {
@@ -185,9 +186,9 @@ namespace BetterLoadSaveGame
 
             if (Visible)
             {
-                string title = "Load Game";
+                string title = Localizer.Format("#LOC_BLSG_LOAD_GAME");
                 if (useArchives)
-                    title += " from Archives";
+                    title += " " + Localizer.Format("#LOC_BLSG_FROM_ARCHIVES");
                 _windowRect = ClickThruBlocker.GUILayoutWindow(_instanceID, _windowRect, (windowID) =>
                 {
                     GUI.enabled = !_visibleDeleteDialog;
@@ -203,13 +204,13 @@ namespace BetterLoadSaveGame
                     GUILayout.BeginHorizontal();
                     if (lastButtonclicked == "" || lastButtonclicked == "persistent")
                         GUI.enabled = false;
-                    if (GUILayout.Button("Delete", buttonStyleOrange, GUILayout.Width(90), GUILayout.Height(30)))
+                    if (GUILayout.Button(Localizer.Format("#LOC_BLSG_DELETE"), buttonStyleOrange, GUILayout.Width(90), GUILayout.Height(30)))
                     {
                         _visibleDeleteDialog = true;
                     }
                     if (!useArchives)
                     {
-                        if (GUILayout.Button("Archive", GUILayout.Width(90), GUILayout.Height(30)))
+                        if (GUILayout.Button(Localizer.Format("#LOC_BLSG_ARCHIVE"), GUILayout.Width(90), GUILayout.Height(30)))
                         {
                             ManageOldSaves.MoveSaveToArchive(selectedSave);
                             Main.fetch.RefreshSaves();
@@ -220,7 +221,7 @@ namespace BetterLoadSaveGame
                     GUI.enabled = !_visibleDeleteDialog;
 
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("Cancel", GUI.skin.button, GUILayout.Width(90), GUILayout.Height(30)))
+                    if (GUILayout.Button(Localizer.Format("#LOC_BLSG_CANCEL"), GUI.skin.button, GUILayout.Width(90), GUILayout.Height(30)))
                     {
 
                         Visible = false;
@@ -231,7 +232,7 @@ namespace BetterLoadSaveGame
 
                     if (lastButtonclicked == "" || _visibleDeleteDialog)
                         GUI.enabled = false;
-                    if (GUILayout.Button("Load", buttonStyleYellow, GUILayout.Width(90), GUILayout.Height(30)))
+                    if (GUILayout.Button(Localizer.Format("#LOC_BLSG_LOAD"), buttonStyleYellow, GUILayout.Width(90), GUILayout.Height(30)))
                         Visible = false;
                     GUI.enabled = true;
 
@@ -257,8 +258,8 @@ namespace BetterLoadSaveGame
 
                 _deleteRect = ClickThruBlocker.GUILayoutWindow(_instanceID + 1, _deleteRect, (winId) =>
                 {
-                    GUILayout.Label("Are you sure you want to delete this save?\nYou will lose all progress and ships in it.");
-                    if (GUILayout.Button("Delete Save"))
+                    GUILayout.Label(Localizer.Format("#LOC_BLSG_ARE_YOU_SURE"));
+                    if (GUILayout.Button(Localizer.Format("#LOC_BLSG_DELETE_SAVE")))
                     {
 
                         if (useArchives)
@@ -273,12 +274,12 @@ namespace BetterLoadSaveGame
                         // Visible = false;
                         lastButtonclicked = "";
                     }
-                    if (GUILayout.Button("Cancel"))
+                    if (GUILayout.Button(Localizer.Format("#LOC_BLSG_CANCEL")))
                     {
                         _visibleDeleteDialog = false;
                     }
                     GUI.DragWindow();
-                }, "Confirmation Needed", GUI.skin.window);
+                }, Localizer.Format("#LOC_BLSG_CONFIRMATION_NEEDED"), GUI.skin.window);
 
             }
         }
@@ -355,12 +356,12 @@ namespace BetterLoadSaveGame
         {
             if (HighLogic.CurrentGame.Parameters.CustomParams<BLSG2>().archiveSaves)
             {
-                string t = "Use Archives";
+                string t = Localizer.Format("#LOC_BLSG_USE_ARCHIVES");
                 GUIContent c = new GUIContent(t);
                 Vector2 s = (HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin ? GUI.skin.toggle.CalcSize(c) : GUI.skin.textField.CalcSize(c));
 
                 bool b = useArchives;
-                useArchives = GUI.Toggle(new Rect(2, 2, s.x, s.y), useArchives, "Use Archives");
+                useArchives = GUI.Toggle(new Rect(2, 2, s.x, s.y), useArchives, t);
                 if (b != useArchives)
                 {
                     if (useArchives)
@@ -375,14 +376,14 @@ namespace BetterLoadSaveGame
                 }
             }
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Sort:", GUILayout.ExpandWidth(false));
-            RenderSortButton(SortModeEnum.FileTime, "File Time ");
-            RenderSortButton(SortModeEnum.GameTime, "Game Time ");
-            RenderSortButton(SortModeEnum.Name, "Name ");
+            GUILayout.Label(Localizer.Format("#LOC_BLSG_SORT"), GUILayout.ExpandWidth(false));
+            RenderSortButton(SortModeEnum.FileTime, Localizer.Format("#LOC_BLSG_FILE_TIME"));
+            RenderSortButton(SortModeEnum.GameTime, Localizer.Format("#LOC_BLSG_GAME_TIME"));
+            RenderSortButton(SortModeEnum.Name, Localizer.Format("#LOC_BLSG_NAME"));
 
             GUILayout.FlexibleSpace();
 
-            string text = "Use alt. skin";
+            string text = Localizer.Format("#LOC_BLSG_ALT_SKIN");
             GUIContent content = new GUIContent(text);
             Vector2 size = (HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin ? GUI.skin.toggle.CalcSize(content) : GUI.skin.textField.CalcSize(content));
 
@@ -401,7 +402,7 @@ namespace BetterLoadSaveGame
             if (HasMod.hasMod("AutoQuickSaveSystem"))
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("AQSS prefixes:");
+                GUILayout.Label(Localizer.Format("#LOC_BLSG_AQSS_PREFIXES"));
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button(Quicksave.LAUNCH_QS_PREFIX, GUILayout.Width(120)))
                     _filterText = Quicksave.LAUNCH_QS_PREFIX;
@@ -421,7 +422,7 @@ namespace BetterLoadSaveGame
             GUILayout.BeginHorizontal();
             if (GUILayout.Button(new GUIContent(Main.clearBtn), GUILayout.Width(32)))
                 _filterText = "";
-            GUILayout.Label("Filter:", GUILayout.ExpandWidth(false));
+            GUILayout.Label(Localizer.Format("#LOC_BLSG_FILTER"), GUILayout.ExpandWidth(false));
             _filterText = GUILayout.TextField(_filterText);
 
             GUILayout.EndHorizontal();
