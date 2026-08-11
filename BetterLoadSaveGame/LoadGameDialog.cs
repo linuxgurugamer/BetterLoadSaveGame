@@ -375,25 +375,24 @@ namespace BetterLoadSaveGame
                     Main.fetch.RefreshSaves();
                 }
             }
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(Localizer.Format("#LOC_BLSG_SORT"), GUILayout.ExpandWidth(false));
-            RenderSortButton(SortModeEnum.FileTime, Localizer.Format("#LOC_BLSG_FILE_TIME"));
-            RenderSortButton(SortModeEnum.GameTime, Localizer.Format("#LOC_BLSG_GAME_TIME"));
-            RenderSortButton(SortModeEnum.Name, Localizer.Format("#LOC_BLSG_NAME"));
-
-            GUILayout.FlexibleSpace();
 
             string text = Localizer.Format("#LOC_BLSG_ALT_SKIN");
             GUIContent content = new GUIContent(text);
             Vector2 size = (HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin ? GUI.skin.toggle.CalcSize(content) : GUI.skin.textField.CalcSize(content));
 
-            bool newVal = GUILayout.Toggle(HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin, text, GUILayout.ExpandWidth(false), GUILayout.Width(size.x + 30));
+            bool newVal = GUI.Toggle(new Rect(_windowRect.width - size.x - 32, 2, size.x, size.y), HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin, text);
             if (newVal != HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin)
             {
                 HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin = newVal;
                 firstTime = true;
             }
 
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(Localizer.Format("#LOC_BLSG_SORT"), GUILayout.ExpandWidth(false));
+            RenderSortButton(SortModeEnum.FileTime, Localizer.Format("#LOC_BLSG_FILE_TIME"));
+            RenderSortButton(SortModeEnum.GameTime, Localizer.Format("#LOC_BLSG_GAME_TIME"));
+            RenderSortButton(SortModeEnum.Name, Localizer.Format("#LOC_BLSG_NAME"));
+            GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         }
 
