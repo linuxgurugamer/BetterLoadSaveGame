@@ -10,7 +10,7 @@ namespace BetterLoadSaveGame
     // HighLogic.CurrentGame.Parameters.CustomParams<BLSG1>().useAlternateSkin
     public class BLSG1 : GameParameters.CustomParameterNode
     {
-        public override string Title { get { return "General"; } }
+        public override string Title { get { return "#LOC_BLSG_GENERAL"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
         public override string Section { get { return "BetterLoadSaveGame"; } }
         public override string DisplaySection { get { return "Better Load Save Game"; } }
@@ -18,16 +18,16 @@ namespace BetterLoadSaveGame
         public override bool HasPresets { get { return true; } }
 
 
-        [GameParameters.CustomParameterUI("Replace stock Load Game dialog on F9",
-            toolTip = "If enabled, the F7 key won't be used to open BLSG")]
+        [GameParameters.CustomParameterUI("#LOC_BLSG_REPLACE_STOCK",
+            toolTip = "#LOC_BLSG_REPLACE_STOCK_TIP")]
         public bool replaceStock = true;
 
 
-        [GameParameters.CustomParameterUI("Don't show the persistent.sfs file")]
+        [GameParameters.CustomParameterUI("#LOC_BLSG_NO_PERSISTENT")]
         public bool hidePersistent = false;
 
-        [GameParameters.CustomParameterUI("Use alternate skin",
-            toolTip = "Use a more minimiliast skin")]
+        [GameParameters.CustomParameterUI("#LOC_BLSG_ALT_SKIN",
+            toolTip = "#LOC_BLSG_ALT_SKIN_TIP")]
         public bool useAlternateSkin = false;
 
 
@@ -39,7 +39,7 @@ namespace BetterLoadSaveGame
 
     public class BLSG2 : GameParameters.CustomParameterNode
     {
-        public override string Title { get { return "Deletion/Archive"; } }
+        public override string Title { get { return "#LOC_BLSG_DELETION_ARCHIVE"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
         public override string Section { get { return "BetterLoadSaveGame"; } }
         public override string DisplaySection { get { return "Better Load Save Game"; } }
@@ -49,25 +49,25 @@ namespace BetterLoadSaveGame
         bool oldArchiveSaves, oldDeleteSaves;
         bool initted = false;
 
-        [GameParameters.CustomParameterUI("Archive old saves",
-            toolTip = "Automatically archive saves older than the specified age")]
+        [GameParameters.CustomParameterUI("#LOC_BLSG_ARCHIVE_OLD",
+            toolTip = "#LOC_BLSG_ARCHIVE_OLD_TIP")]
         public bool archiveSaves = true;
 
-        [GameParameters.CustomParameterUI("Delete old saves",
-            toolTip = "Automatically delete saves older than the specified age")]
+        [GameParameters.CustomParameterUI("#LOC_BLSG_DELETE_OLD",
+            toolTip = "#LOC_BLSG_DELETE_OLD_TIP")]
         public bool deleteSaves = false;
 
 
         bool oldHourUnit, oldDayUnit;
 
-        [GameParameters.CustomParameterUI("Unit:  Hours",
-            toolTip = "Age of the save will be measured in Hours")]
+        [GameParameters.CustomParameterUI("#LOC_BLSG_UNIT_HOURS",
+            toolTip = "#LOC_BLSG_UNIT_HOURS_TIP")]
         public bool hourUnit = false;
-        [GameParameters.CustomParameterUI("Unit:  Days",
-            toolTip = "Age of the save will be measured in Days")]
+        [GameParameters.CustomParameterUI("#LOC_BLSG_UNIT_DAYS",
+            toolTip = "#LOC_BLSG_UNIT_DAYS_TIP")]
         public bool dayUnit = true;
 
-        [GameParameters.CustomIntParameterUI("File age in specified units", minValue = 1, maxValue = 1440)]
+        [GameParameters.CustomIntParameterUI("#LOC_BLSG_AGE", minValue = 1, maxValue = 1440)]
         public int fileAge = 5;
 
         public override void SetDifficultyPreset(GameParameters.Preset preset) { }
